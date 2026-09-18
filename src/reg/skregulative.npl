@@ -1,0 +1,14 @@
+scope main {
+
+    norm n1: order(Id, Ag, D)
+        -> obligation(Ag, n1, assembledSk(Id), D)
+            if fulfilled: srs1(Ag, Id)
+            if unfulfilled: srs2(Ag, Id)
+        .
+
+    sanction-rule srs1(Ag, Id)
+        -> sanction(Ag, increaseReputation(Ag, 10)).
+
+    sanction-rule srs2(Ag, Id)
+        -> sanction(Ag, decreaseReputation(Ag, 10)).
+}

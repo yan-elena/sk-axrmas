@@ -27,10 +27,10 @@
           .wait(R * 10000);
           if (orderStatus(X, _)) {
             ID = X+1;
-            //!sendOrder(ID);
+            !sendOrder(ID);
           } else {
             ID = 1;
-            //!sendOrder(ID);
+            !sendOrder(ID);
           }
           +orderStatus(ID, received);
           !simOrder;
@@ -53,7 +53,7 @@
         ?play(Gov, skGovernor, skgroup);
         ?nticks(Time);
         Deadline = Time + 5000;
-        .send(Gov, tell, order(ID, nticks(Deadline)));
+        .send(Gov, signal, order(ID, nticks(Deadline)));
         .
 
 

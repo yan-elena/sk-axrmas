@@ -11,19 +11,28 @@
 
 mas main {
 
+    // Domain Regulation Management Agent
+    agent gov: domain/gov.asl {
+        beliefs: bottleneckThreshold(6), proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
+        focus: clock
+    }
+
+
     // Domain Application Agents
-    agent customer: domain/cca.asl {
+    agent cca: domain/cca.asl {
         focus: wsk.clock
     }
 
-    agent wca: domain/sca.asl
+    agent wca: domain/wca.asl {
+    }
 
-    agent sca: domain/wca.asl {
+    agent sca: domain/sca.asl {
         focus: wsk.art
+        instances: 3
     }
 
      workspace wsk {
-         //artifact art : WkArtifact()
+         artifact art : WkArtifact()
          artifact clock : cartago.tools.Clock()
      }
 
