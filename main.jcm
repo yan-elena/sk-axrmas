@@ -11,11 +11,13 @@
 
 mas main {
 
-    agent bob: sample_agent.asl {
-      focus: w.c1 
+    // Domain Application Agents
+    agent customer: domain/cca.asl {
+        focus: wsk.clock
     }
 
-    workspace w {
-      artifact c1: example.Counter(3) 
-    }
+     workspace wsk {
+         //artifact art : WkArtifact()
+         artifact clock : cartago.tools.Clock()
+     }
 }
