@@ -34,23 +34,25 @@
 
 // Assign order to sca agents
 
-+order(Id, D) : scaStatus(Ag, free, _, N, _)
++order(Id, D) : scaStatus(Ag, free, _, N, R)
     <-
         addFact(order(Id, Ag, D));
         ?play(Cca, customer, skgroup);
         .send(Cca, signal, startOrder(Id));
-        -+scaStatus(Ag, busy, Id, N+1, _);
+        -+scaStatus(Ag, busy, Id, N+1, R);
         .print("order ", Id, " assigned to agent ", Ag);
         .
+
++!order(Id, D)
+   <-   .print("order ", Id, " is waiting for an available agent!");
+        .wait(1000);
+        !order(Id, D).
 
 // order finished
 
 +assembledSk(Id)[source(Ag)] : scaStatus(Ag, _, Id, N, _)
     <-  .print("add fact", assembledSk(Id));
         addFact(assembledSk(Id));
-        -+scaStatus(Ag, free, Id, N+1, _);
-        ?play(Cca, customer, skgroup);
-        .send(Cca, signal, completeOrder(Id));
         .
 
 
@@ -65,13 +67,17 @@
 
 // send the obligation to the corresponding sca agent
 
-+obligation(Ag,Norm,What,Deadline)
++obligation(Ag,n1,assembledSk(Id),Deadline)
    <-   .print(Ag, " is obliged to ", What);
         .send(Ag, achieve, What, Deadline);
         .
 
 
-
++fulfilled(obligation(Ag,n1,assembledSk(Id),Deadline))
+    <-  -+scaStatus(Ag, free, Id, N+1, _);
+        ?play(Cca, customer, skgroup);
+        .send(Cca, signal, completeOrder(Id));
+        .
 
 
 // Logs for an update of the normative state

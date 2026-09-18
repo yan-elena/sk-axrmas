@@ -12,7 +12,7 @@
         .print("trunk torqued on ", Id);
 
         .print("completed assembly skateboard id: ", Id);
-        ?play(Ag, skHandler, skgroup);
+        ?play(Ag, skGovernor, skgroup);
         .send(Ag, signal, assembledSk(Id));
         .
 
