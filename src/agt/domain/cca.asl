@@ -9,7 +9,7 @@
 
 /* Plans */
 +!start : formationStatus(ok)
-    <-  .wait(2000);
+    <-  .wait(3000);
         .print("started producing orders.");
         !init_clock;
 
@@ -23,16 +23,15 @@
 
 // simulating new orders
 +!simOrder
-    <-    .random(R);
-          .wait(R * 10000);
-          if (orderStatus(X, _)) {
+    <-    if (orderStatus(X, _)) {
             ID = X+1;
-            !sendOrder(ID);
           } else {
             ID = 1;
-            !sendOrder(ID);
           }
           +orderStatus(ID, received);
+          !sendOrder(ID);
+          .random(R);
+          .wait(R * 8000);
           !simOrder;
           .
 
@@ -52,7 +51,7 @@
     <-  
         ?play(Gov, skGovernor, skgroup);
         ?nticks(Time);
-        Deadline = Time + 5000;
+        Deadline = Time + 13000;
         .send(Gov, signal, order(ID, nticks(Deadline)));
         .
 

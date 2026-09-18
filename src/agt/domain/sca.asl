@@ -1,7 +1,7 @@
 
 
 
-+!assembledSk(Id)[source(gov)]
++!assembledSk(Id)
     <-
         .print("start assembly skateboard id: ", Id);
         installTrunk;

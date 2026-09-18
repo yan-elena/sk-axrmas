@@ -11,7 +11,7 @@ public class WkArtifact extends Artifact {
     void installTrunk() {
         log("operation install trunk started...");
         try {
-            int r = random.nextInt(1000, 10000);
+            int r = random.nextInt(1000, 4000);
             Thread.sleep(r);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -23,7 +23,7 @@ public class WkArtifact extends Artifact {
     void assemblyWheel() {
         log("operation assembly wheel started...");
         try {
-            int r = random.nextInt(1000, 10000);
+            int r = random.nextInt(2000, 8000);
             Thread.sleep(r);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -35,7 +35,7 @@ public class WkArtifact extends Artifact {
     void torqueTrunk() {
         log("operation torque trunk started...");
         try {
-            int r = random.nextInt(1000, 10000);
+            int r = random.nextInt(1000, 4000);
             Thread.sleep(r);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
