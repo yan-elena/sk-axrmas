@@ -2,7 +2,6 @@
 
 /* Initial beliefs and rules */
 
-formationStatus(ok).
 
 /* Initial goals */
 

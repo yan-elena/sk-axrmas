@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?xml-stylesheet href="http://moise.sourceforge.net/xml/os.xsl" type="text/xsl" ?>
+
+<organisational-specification
+        id="main"
+        os-version="0.8"
+
+        xmlns='http://moise.sourceforge.net/os'
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xsi:schemaLocation='http://moise.sourceforge.net/os
+                        http://moise.sourceforge.net/xml/os.xsd' >
+
+    <structural-specification>
+
+        <role-definitions>
+            <role id="governor"/>
+            <role id="skHandler" />
+        </role-definitions>
+
+        <group-specification id="skgroup">
+            <roles>
+                <role id="customer" min="1"/>
+                <role id="skGovernor"/>
+                <role id="rmController"/>
+                <role id="skHandler" min="1"/>
+                <role id="wkHandler" min="1"/>
+            </roles>
+        </group-specification>
+    </structural-specification>
+
+    <functional-specification>
+        <scheme id="assemblySkSch">
+            <goal id="assemblySkateboard" type="achievement">
+                <argument id="Id" />
+                <plan operator="sequence">
+                    <goal id="trunkInstalled" type="achievement"/>
+                    <goal id="wheelAssembled" type="achievement"/>
+                    <goal id="trunkTorqued" type="achievement"/>
+                </plan>
+            </goal>
+
+            <mission id="mAssemblySkateboard" min="1">
+                <goal id="trunkInstalled"/>
+                <goal id="wheelAssembled"/>
+                <goal id="trunkTorqued"/>
+            </mission>
+        </scheme>
+    </functional-specification>
+
+    <!--    <normative-specification>-->
+    <!--        <properties>-->
+    <!--            <property id="default_management"  value="fail" />-->
+    <!--            <property id="role_compatibility"  value="prohibition" />-->
+    <!--            <property id="mission_cardinality" value="prohibition" />-->
+    <!--        </properties>-->
+
+    <!--        <norm id="norm1"  type="obligation" role="skHandler" mission="mAssemblySkateboard" time-constraint="10 seconds"/>-->
+
+    <!--    </normative-specification>-->
+
+</organisational-specification>

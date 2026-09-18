@@ -16,8 +16,26 @@ mas main {
         focus: wsk.clock
     }
 
+    agent wca: domain/sca.asl
+
+    agent sca: domain/wca.asl {
+        focus: wsk.art
+    }
+
      workspace wsk {
          //artifact art : WkArtifact()
          artifact clock : cartago.tools.Clock()
+     }
+
+     organisation skorg {
+         group skgroup: skgroup {
+             responsible-for: s1
+             players: cca customer
+                      sca skHandler
+                      wca wkHandler
+                      gov skGovernor
+                      ca rmController
+         }
+         scheme s1: assemblySkSch
      }
 }
