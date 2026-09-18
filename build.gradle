@@ -20,6 +20,7 @@ java {
 repositories {
     maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
     maven { url "https://repo.gradle.org/gradle/libs-releases" }
+    maven { url "https://raw.githubusercontent.com/yan-elena/mvn-repo/refs/heads/main" }
 
     //flatDir { dirs 'lib' }
 
@@ -30,6 +31,8 @@ repositories {
 
 dependencies {
     implementation('org.jacamo:jacamo:1.3.0')
+    implementation('org.jacamo:nagent-adapt:1.1')
+    implementation('org.jacamo:logging-component:1.0')
 }
 
 sourceSets {
