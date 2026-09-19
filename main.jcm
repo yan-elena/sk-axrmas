@@ -23,16 +23,31 @@ mas main {
         focus: wsk.clock
     }
 
-    agent wca: domain/wca.asl {
+    agent twa: domain/wca.asl {
+        focus: wsk.tw
+    }
+
+    agent wwa: domain/wca.asl {
+        focus: wsk.ww
+    }
+
+    agent owa: domain/wca.asl {
+        focus: wsk.ow
+    }
+
+    agent qwa: domain/qa.asl {
+        focus: wsk.qw
     }
 
     agent sca: domain/sca.asl {
-        focus: wsk.art
-        instances: 3
+        instances: 5
     }
 
      workspace wsk {
-         artifact art : WkArtifact()
+         artifact tw : TrunkWkArtifact()
+         artifact ww : WheelWkArtifact()
+         artifact ow : OptionalWkArtifact()
+         artifact qw : QualityWkArtifact()
          artifact clock : cartago.tools.Clock()
      }
 
@@ -41,7 +56,10 @@ mas main {
              responsible-for: s1
              players: cca customer
                       sca skHandler
-                      wca wkHandler
+                      twa trunkWsHandler
+                      wwa wheelWsHandler
+                      owa optionalWsHandler
+                      qwa qualityWsHandler
                       gov skGovernor
                       ca rmController
          }

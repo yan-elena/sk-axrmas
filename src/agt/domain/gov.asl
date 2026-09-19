@@ -50,21 +50,14 @@
         !selectAgent(order(Id, D));
         .
 
-+!selectAgent(order(Id, D)) : maxRAg(MaxAg, MaxR)
++!selectAgent(order(Id, D))
     <-  .print("selecting agent for order ", Id);
 
-        for (scaStatus(Ag, free, I, N, R)) {
-            if ( R >= MaxR ) {
-                -+maxRAg(Ag, R);
-                .print("agent max R: ", maxRAg(Ag, R));
-            }
-        }
+        !findMaxRAg;
 
-        ?maxRAg(MaxRAg2, MaxR2);
-        .print("agent with MAX reputation: ", maxRAg(MaxRAg2, MaxR2));
-
-        if (MaxRAg) {
-            !assignOrder(Id, MaxRAg2, D);
+        if (maxRAg(M, R)) {
+            .print("agent with MAX reputation: ", M);
+            !assignOrder(Id, M, D);
         } else {
             .print("no free agent now, wait...");
             .wait(1000);
@@ -72,21 +65,41 @@
         }
         .
 
-+!assignOrder(Id, Ag, D) : scaStatus(Ag, free, I, N, R) & maxRAg(Ag, R)
++!assignOrder(Id, Ag, D) : scaStatus(Ag2, busy, Id, N, R)
+    <-  .print("agent ", Ag2, " is busy with order ", Id);
+        .
+
++!assignOrder(Id, Ag, D) : scaStatus(Ag, free, I, N, R)
     <-  .print("assign order ", Id, " to agent ", Ag);
-        -scaStatus(Ag, free, I, N, R);
-        +scaStatus(Ag, busy, Id, N+1, R);
-        !testStatus;
-        addFact(order(Id, Ag, D));
         ?play(Cca, customer, skgroup);
         .send(Cca, signal, startOrder(Id));
+        addFact(order(Id, Ag, D));
         .print("order ", Id, " assigned to agent ", Ag);
+        .
+
++!assignOrder(Id, Ag, D) : scaStatus(Ag, busy, I, N, R)
+    <-  .wait(1000);
+        !selectAgent(order(Id, D));
+        .
+
++!findMaxRAg
+    <-  -maxRAg(_, _);
+        for (scaStatus(Ag, free, I, N, R)) {
+            if (maxRAg(MAg, MR) & R >= MR ) {
+                    -maxRAg(MAg, MR);
+                    +maxRAg(Ag, R);
+                    .print("agent max R: ", maxRAg(Ag, R));
+            } else {
+                +maxRAg(Ag, R);
+                .print("agent max R: ", maxRAg(Ag, R));
+            }
+        }
         .
 
 // order finished
 
-+assembledSk(Id)[source(Ag)] : scaStatus(Ag, _, Id, N, _)
-    <-  .print("add fact ", assembledSk(Id));
++assembledSk(Id)[source(Ag)]
+    <-  .print("received ", assembledSk(Id));
         addFact(assembledSk(Id));
         .
 
@@ -98,14 +111,16 @@
 +!enforceExecute(Sanctionee, increaseReputation(X))
    <-   !testStatus;
         ?scaStatus(Sanctionee, S, Id, N, R);
-        -+scaStatus(Sanctionee, S, Id, N, R+X);
+        -scaStatus(Sanctionee, S, Id, N, R);
+        +scaStatus(Sanctionee, S, Id, N, R+X);
         .print("execute enforce capability on ", Sanctionee, " new reputation: ", R+X);
         .
 
 +!enforceExecute(Sanctionee, decreaseReputation(X))
    <-   !testStatus;
         ?scaStatus(Sanctionee, S, Id, N, R);
-        -+scaStatus(Sanctionee, S, Id, N, R-X);
+        -scaStatus(Sanctionee, S, Id, N, R);
+        +scaStatus(Sanctionee, S, Id, N, R-X);
         .print("execute enforce capability on ", Sanctionee, " new reputation: ", R-X);
         .
 
@@ -116,26 +131,35 @@
 
 // send the obligation to the corresponding sca agent
 
-+obligation(Ag,Norm,What,Deadline)
-   <-   .print(Ag, " is obliged to ", What);
-        .send(Ag, achieve, What, Deadline);
++obligation(Ag,Norm,assembledSk(Id),Deadline)
+   <-   .print(Ag, " is obliged to ", assembledSk(Id));
+        .send(Ag, achieve, assembledSk(Id), Deadline);
+        ?scaStatus(Ag, S, I, N, R);
+        -scaStatus(Ag, S, I, N, R);
+        +scaStatus(Ag, busy, Id, N+1, R);
+        !testStatus;
         .
 
 +oblFulfilled(obligation(Ag,Norm,assembledSk(Id),Deadline))
     <-  .print("FULFILLED obligation: ", obligation(Ag,Norm,assembledSk(Id),Deadline));
-        ?scaStatus(Ag, S, Id, N, R);
-        -scaStatus(Ag, S, Id, N, R);
-        +scaStatus(Ag, free, Id, N+1, R);
         ?play(Cca, customer, skgroup);
         .send(Cca, signal, completeOrder(Id));
         .
 
++oblUnfulfilled(obligation(Ag,Norm,assembledSk(Id),Deadline))
+    <-  .print("UNFULFILLED obligation: ", obligation(Ag,Norm,assembledSk(Id),Deadline));
+        ?play(Cca, customer, skgroup);
+        .send(Cca, signal, delayOrder(Id));
+        .
 
 // enfoce capability
 
 +sanction(Norm,Status,Sanctionee,Content)
-   <-  .print("sanction ", sanction(Norm,Status,Subject,Content));
+   <-  .print("sanction ", sanction(Norm,Status,Sanctionee,Content));
        !enforceExecute(Sanctionee, Content);
+        ?scaStatus(Sanctionee, S, Id, N, R);
+        -scaStatus(Sanctionee, S, Id, N, R);
+        +scaStatus(Sanctionee, free, Id, N+1, R);
        .
 
 

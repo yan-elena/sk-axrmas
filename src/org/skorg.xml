@@ -14,17 +14,26 @@
     <structural-specification>
 
         <role-definitions>
-            <role id="governor"/>
+            <role id="customer"/>
+            <role id="skGovernor"/>
             <role id="skHandler" />
+            <role id="rmController"/>
+            <role id="wkHandler"/>
+            <role id="trunkWsHandler">  <extends role="wkHandler"/>  </role>
+            <role id="wheelWsHandler">  <extends role="wkHandler"/>  </role>
+            <role id="optionalWsHandler">  <extends role="wkHandler"/>  </role>
+            <role id="qualityWsHandler">  <extends role="wkHandler"/>  </role>
         </role-definitions>
 
         <group-specification id="skgroup">
             <roles>
-                <role id="customer" min="1"/>
+                <role id="customer"/>
                 <role id="skGovernor"/>
-                <role id="rmController"/>
                 <role id="skHandler" min="1"/>
-                <role id="wkHandler" min="1"/>
+                <role id="trunkWsHandler"/>
+                <role id="wheelWsHandler"/>
+                <role id="optionalWsHandler"/>
+                <role id="qualityWsHandler"/>
             </roles>
         </group-specification>
     </structural-specification>

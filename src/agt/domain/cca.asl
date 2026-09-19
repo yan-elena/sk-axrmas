@@ -35,12 +35,24 @@
           !simOrder;
           .
 
+// order events
+
 +startOrder(ID)
-    <-  -+orderStatus(ID, started);
+    <-  ?orderStatus(ID, S);
+        +orderStatus(ID, started);
+        -orderStatus(ID, S);
         .
 
 +completeOrder(ID)
-    <-  -+orderStatus(ID, completed);
+    <-  ?orderStatus(ID, S);
+        +orderStatus(ID, fulfilled);
+        -orderStatus(ID, S);
+        .
+
++delayOrder(ID)
+    <-  ?orderStatus(ID, S);
+        +orderStatus(ID, delayed);
+        -orderStatus(ID, S);
         .
 
 +orderStatus(ID, Status)
@@ -51,7 +63,7 @@
     <-  
         ?play(Gov, skGovernor, skgroup);
         ?nticks(Time);
-        Deadline = Time + 13000;
+        Deadline = Time + 25000;
         .send(Gov, signal, order(ID, nticks(Deadline)));
         .
 
