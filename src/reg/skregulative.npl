@@ -7,8 +7,8 @@ scope main {
         .
 
     sanction-rule srs1(Ag)
-        -> sanction(Ag, increaseReputation(10)).
+        -> sanction(Ag, increaseImage(10)).
 
     sanction-rule srs2(Ag)
-        -> sanction(Ag, decreaseReputation(10)).
+        -> sanction(Ag, decreaseImage(10)).
 }

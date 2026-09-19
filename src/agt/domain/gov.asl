@@ -21,7 +21,7 @@
             }
         }
 
-        +maxRAg(A, 0);
+        +maxIAg(A, 0);
 
         .print("started.");
     .
@@ -32,14 +32,14 @@
 
 
 +!testStatus
-   <-   for (scaStatus(Ag, Status, Id, Completed, Reputation)) {
-            .print(scaStatus(Ag, Status, Id, Completed, Reputation));
+   <-   for (scaStatus(Ag, Status, Id, Completed, Image)) {
+            .print(scaStatus(Ag, Status, Id, Completed, Image));
         }
         .
 
 
-+scaStatus(Ag, Status, Id, Completed, Reputation)
-    <-  .print("TEST:::: ", scaStatus(Ag, Status, Id, Completed, Reputation));
++scaStatus(Ag, Status, Id, Completed, Image)
+    <-  .print("TEST:::: ", scaStatus(Ag, Status, Id, Completed, Image));
         .
 
 // Assign order to sca agents
@@ -53,9 +53,9 @@
 +!selectAgent(order(Id, D))
     <-  .print("selecting agent for order ", Id);
 
-        !findMaxRAg;
+        !findMaxIAg;
 
-        if (maxRAg(M, R)) {
+        if (maxIAg(M, Im)) {
             .print("agent with MAX reputation: ", M);
             !assignOrder(Id, M, D);
         } else {
@@ -65,11 +65,11 @@
         }
         .
 
-+!assignOrder(Id, Ag, D) : scaStatus(Ag2, busy, Id, N, R)
++!assignOrder(Id, Ag, D) : scaStatus(Ag2, busy, Id, N, Im)
     <-  .print("agent ", Ag2, " is busy with order ", Id);
         .
 
-+!assignOrder(Id, Ag, D) : scaStatus(Ag, free, I, N, R)
++!assignOrder(Id, Ag, D) : scaStatus(Ag, free, I, N, Im)
     <-  .print("assign order ", Id, " to agent ", Ag);
         ?play(Cca, customer, skgroup);
         .send(Cca, signal, startOrder(Id));
@@ -77,21 +77,21 @@
         .print("order ", Id, " assigned to agent ", Ag);
         .
 
-+!assignOrder(Id, Ag, D) : scaStatus(Ag, busy, I, N, R)
++!assignOrder(Id, Ag, D) : scaStatus(Ag, busy, I, N, Im)
     <-  .wait(1000);
         !selectAgent(order(Id, D));
         .
 
-+!findMaxRAg
-    <-  -maxRAg(_, _);
-        for (scaStatus(Ag, free, I, N, R)) {
-            if (maxRAg(MAg, MR) & R >= MR ) {
-                    -maxRAg(MAg, MR);
-                    +maxRAg(Ag, R);
-                    .print("agent max R: ", maxRAg(Ag, R));
++!findMaxIAg
+    <-  -maxIAg(_, _);
+        for (scaStatus(Ag, free, I, N, Im)) {
+            if (maxIAg(MAg, MIm) & Im>= MIm) {
+                    -maxIAg(MAg, MIm);
+                    +maxIAg(Ag, Im);
+                    .print("agent maxIm: ", maxIAg(Ag, Im));
             } else {
-                +maxRAg(Ag, R);
-                .print("agent max R: ", maxRAg(Ag, R));
+                +maxIAg(Ag, Im);
+                .print("agent maxIm: ", maxIAg(Ag, Im));
             }
         }
         .
@@ -108,20 +108,20 @@
 // ------------ Regulation Management -----------------------
 
 
-+!enforceExecute(Sanctionee, increaseReputation(X))
++!enforceExecute(Sanctionee, increaseImage(X))
    <-   !testStatus;
-        ?scaStatus(Sanctionee, S, Id, N, R);
-        -scaStatus(Sanctionee, S, Id, N, R);
-        +scaStatus(Sanctionee, S, Id, N, R+X);
-        .print("execute enforce capability on ", Sanctionee, " new reputation: ", R+X);
+        ?scaStatus(Sanctionee, S, Id, N, Im);
+        -scaStatus(Sanctionee, S, Id, N, Im);
+        +scaStatus(Sanctionee, S, Id, N,Im+X);
+        .print("execute enforce capability on ", Sanctionee, " new reputation: ",Im+X);
         .
 
-+!enforceExecute(Sanctionee, decreaseReputation(X))
++!enforceExecute(Sanctionee, decreaseImage(X))
    <-   !testStatus;
-        ?scaStatus(Sanctionee, S, Id, N, R);
-        -scaStatus(Sanctionee, S, Id, N, R);
-        +scaStatus(Sanctionee, S, Id, N, R-X);
-        .print("execute enforce capability on ", Sanctionee, " new reputation: ", R-X);
+        ?scaStatus(Sanctionee, S, Id, N, Im);
+        -scaStatus(Sanctionee, S, Id, N, Im);
+        +scaStatus(Sanctionee, S, Id, N,Im-X);
+        .print("execute enforce capability on ", Sanctionee, " new reputation: ",Im-X);
         .
 
 +obligation(Ag,Norm,What,Deadline) : .my_name(Ag)
@@ -134,9 +134,9 @@
 +obligation(Ag,Norm,assembledSk(Id),Deadline)
    <-   .print(Ag, " is obliged to ", assembledSk(Id));
         .send(Ag, achieve, assembledSk(Id), Deadline);
-        ?scaStatus(Ag, S, I, N, R);
-        -scaStatus(Ag, S, I, N, R);
-        +scaStatus(Ag, busy, Id, N+1, R);
+        ?scaStatus(Ag, S, I, N, Im);
+        -scaStatus(Ag, S, I, N, Im);
+        +scaStatus(Ag, busy, Id, N+1, Im);
         !testStatus;
         .
 
@@ -157,9 +157,9 @@
 +sanction(Norm,Status,Sanctionee,Content)
    <-  .print("sanction ", sanction(Norm,Status,Sanctionee,Content));
        !enforceExecute(Sanctionee, Content);
-        ?scaStatus(Sanctionee, S, Id, N, R);
-        -scaStatus(Sanctionee, S, Id, N, R);
-        +scaStatus(Sanctionee, free, Id, N+1, R);
+        ?scaStatus(Sanctionee, S, Id, N, Im);
+        -scaStatus(Sanctionee, S, Id, N, Im);
+        +scaStatus(Sanctionee, free, Id, N+1, Im);
        .
 
 
