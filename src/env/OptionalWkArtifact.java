@@ -1,5 +1,7 @@
 import cartago.Artifact;
+import cartago.ArtifactId;
 import cartago.OPERATION;
+import cartago.OperationException;
 
 import java.util.Random;
 
@@ -13,6 +15,7 @@ public class OptionalWkArtifact extends Artifact {
         try {
             int r = random.nextInt(1000, 4000);
             Thread.sleep(r);
+            //execLinkedOp(skArt, "assemblyOptionals");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -1,10 +1,10 @@
 
 
-+!checkQuality(Id)[source(Ag)]
++!checkQuality(SkArt)[source(Ag)]
     <-  .print("received assembly request check quality of ", Id);
-        checkQuality;
-        .print("quality checked: ", Id);
-        .send(Ag, signal, checkedQuality(Id));
+        checkQuality(SkArt);
+        .print("quality checked: ", SkArt);
+        .send(Ag, signal, checkedQuality(SkArt));
         .
 
 

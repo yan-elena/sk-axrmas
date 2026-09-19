@@ -1,37 +1,63 @@
+handleSkateboard(0, none).
 
+// assembly base parts
 
-
-+!assembledSk(Id)
++!assembledBaseSk(Id)
     <-
         .print("start assembly skateboard id: ", Id);
+        .concat("sk", Id, SkId);
+        makeArtifact(SkId, "Skateboard", [Id], SkArt);
+        focus(SkArt);
+        .print("skateboard artifact created: ", SkArt);
+
+        -+handleSkateboard(Id, SkArt);
+
+        // request trunk handler to assembly trunk
         ?play(WAg, trunkWsHandler, skgroup);
-        .send(WAg, achieve, assembly(trunk, Id));
+        .send(WAg, achieve, assembly(trunk));
         .
 
 
-+assembled(trunk, Id)
++assembled(trunk) : handleSkateboard(Id, SkArt)
     <-  .print("trunk installed on ", Id);
+        assemblyTrunk;
         ?play(WAg, wheelWsHandler, skgroup);
-        .send(WAg, achieve, assembly(wheel, Id));
+        .send(WAg, achieve, assembly(wheels));
         .
 
 
-+assembled(wheel, Id)
++assembled(wheels) : handleSkateboard(Id, SkArt)
     <-  .print("wheel installed on ", Id);
-        ?play(WAg, optionalWsHandler, skgroup);
-        .send(WAg, achieve, assembly(optional, Id));
+        assemblyWheels;
+        ?play(Ag, skGovernor, skgroup);
+        .send(Ag, tell, assembledBaseSk(Id)); //done
         .
 
-+assembled(optional, Id)
+
+// assembly optional parts
+
+
++!assembledOptionals(Id) : handleSkateboard(Id, SkArt)
+    <-
+        .print("start assembly optional parts skateboard id: ", Id);
+        ?play(WAg, optionalWsHandler, skgroup);
+        .send(WAg, achieve, assembly(optionals));
+        .
+
+
++assembled(optionals)
  <-  .print("optional installed on ", Id);
-     ?play(WAg, qualityWsHandler, skgroup);
-     .send(WAg, achieve, checkQuality(Id));
+     assemblyOptionals;
+     //?play(WAg, qualityWsHandler, skgroup);
+     //.send(WAg, achieve, checkQuality(SkArt));
+
+    ?play(Ag, skGovernor, skgroup);
+    .send(Ag, tell, assembledOptionals(Id)); //done
      .
 
-+checkedQuality(Id)
-    <-  .print("completed assembly skateboard id: ", Id);
-        ?play(Ag, skGovernor, skgroup);
-        .send(Ag, tell, assembledSk(Id));
++checkedQuality(SkArt)
+    <-  .print("completed quality check skateboard id: ", SkArt);
+        //todo
         .
 
 { include("$jacamo/templates/common-cartago.asl") }

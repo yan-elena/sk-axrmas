@@ -1,14 +1,20 @@
 scope main {
 
-    norm n1: order(Id, Ag, D)
-        -> obligation(Ag, n1, assembledSk(Id), D)
-            if fulfilled: srs1(Ag)
-            if unfulfilled: srs2(Ag)
+    norm n1: order(Id, Ag, Pref, D)
+        -> obligation(Ag, n1, assembledBaseSk(Id), D)
+            if fulfilled: srs1(Ag, 10)
+            if unfulfilled: srs2(Ag, 10)
         .
 
-    sanction-rule srs1(Ag)
-        -> sanction(Ag, increaseImage(10)).
+    norm n2: assembledBaseSk(Id) & order(Id, Ag, optionals, D)
+        -> obligation(Ag, n2, assembledOptionals(Id), D)
+            if fulfilled: srs1(Ag, 5)
+            if unfulfilled: srs2(Ag, 5)
+        .
 
-    sanction-rule srs2(Ag)
-        -> sanction(Ag, decreaseImage(10)).
+    sanction-rule srs1(Ag, X)
+        -> sanction(Ag, increaseImage(X)).
+
+    sanction-rule srs2(Ag, X)
+        -> sanction(Ag, decreaseImage(X)).
 }

@@ -25,21 +25,26 @@ mas main {
 
     agent twa: domain/wca.asl {
         focus: wsk.tw
+        beliefs: artName(tw)
     }
 
     agent wwa: domain/wca.asl {
         focus: wsk.ww
+        beliefs: artName(ww)
     }
 
     agent owa: domain/wca.asl {
         focus: wsk.ow
+        beliefs: artName(ow)
     }
 
     agent qwa: domain/qa.asl {
         focus: wsk.qw
+        beliefs: artName(qw)
     }
 
     agent sca: domain/sca.asl {
+        join: wsk
         instances: 5
     }
 

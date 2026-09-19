@@ -29,8 +29,14 @@
             ID = 1;
           }
           +orderStatus(ID, received);
-          !sendOrder(ID);
           .random(R);
+          if (R > 0.5) {
+            !sendOrder(ID, optionals);
+          }
+          else {
+            !sendOrder(ID, basic);
+          }
+
           .wait(R * 8000);
           !simOrder;
           .
@@ -59,12 +65,12 @@
     <-  .print("order n. ", ID, " status: ", Status);
         .
 
-+!sendOrder(ID)
++!sendOrder(ID, Pref)
     <-  
         ?play(Gov, skGovernor, skgroup);
         ?nticks(Time);
         Deadline = Time + 25000;
-        .send(Gov, signal, order(ID, nticks(Deadline)));
+        .send(Gov, signal, order(ID, Pref, nticks(Deadline)));
         .
 
 

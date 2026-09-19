@@ -1,5 +1,7 @@
 import cartago.Artifact;
+import cartago.ArtifactId;
 import cartago.OPERATION;
+import cartago.OperationException;
 
 import java.util.Random;
 
@@ -13,6 +15,7 @@ public class WheelWkArtifact extends Artifact {
         try {
             int r = random.nextInt(2000, 8000);
             Thread.sleep(r);
+            //execLinkedOp(skArt, "assemblyWheels");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

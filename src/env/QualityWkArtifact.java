@@ -1,4 +1,5 @@
 import cartago.Artifact;
+import cartago.ArtifactId;
 import cartago.OPERATION;
 
 import java.util.Random;

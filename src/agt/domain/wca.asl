@@ -1,10 +1,21 @@
 
 
-+!assembly(Part, Id)[source(Ag)]
-    <-  .print("received assembly request for part: ", Part, " of skateboard id: ", Id);
++!assembly(Part)[source(Ag)]
+    <-  .print("received assembly in the skateboard: ");
+        //?artName(W);
+        //lookupArtifact(W, WkArt);
+
+
+        //?focusing(WkArt,_,_,_,wsk,_);
+        //focus(SkArt);
+
+
+        //makeArtifact("sk", "Skateboard", [2], SkArt2);
+        //linkArtifacts(WkArt, "out-1", SkArt);
         assembly;
-        .print("assembly finished for part: ", Part, " of skateboard id: ", Id);
-        .send(Ag, signal, assembled(Part, Id));
+
+        .print("assembly finished for part: ", Part);
+        .send(Ag, signal, assembled(Part));
         .
 
 

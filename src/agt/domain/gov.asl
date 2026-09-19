@@ -45,41 +45,41 @@
 // Assign order to sca agents
 
 
-+order(Id, D)
++order(Id, Pref, D)
     <-  !testStatus;
-        !selectAgent(order(Id, D));
+        !selectAgent(order(Id, Pref, D));
         .
 
-+!selectAgent(order(Id, D))
++!selectAgent(order(Id, Pref, D))
     <-  .print("selecting agent for order ", Id);
 
         !findMaxIAg;
 
         if (maxIAg(M, Im)) {
             .print("agent with MAX reputation: ", M);
-            !assignOrder(Id, M, D);
+            !assignOrder(Id, M, Pref, D);
         } else {
             .print("no free agent now, wait...");
             .wait(1000);
-            !selectAgent(order(Id, D));
+            !selectAgent(order(Id, Pref, D));
         }
         .
 
-+!assignOrder(Id, Ag, D) : scaStatus(Ag2, busy, Id, N, Im)
++!assignOrder(Id, Ag, Pref, D) : scaStatus(Ag2, busy, Id, N, Im)
     <-  .print("agent ", Ag2, " is busy with order ", Id);
         .
 
-+!assignOrder(Id, Ag, D) : scaStatus(Ag, free, I, N, Im)
++!assignOrder(Id, Ag, Pref, D) : scaStatus(Ag, free, I, N, Im)
     <-  .print("assign order ", Id, " to agent ", Ag);
         ?play(Cca, customer, skgroup);
         .send(Cca, signal, startOrder(Id));
-        addFact(order(Id, Ag, D));
+        addFact(order(Id, Ag, Pref, D));
         .print("order ", Id, " assigned to agent ", Ag);
         .
 
-+!assignOrder(Id, Ag, D) : scaStatus(Ag, busy, I, N, Im)
++!assignOrder(Id, Ag, Pref, D) : scaStatus(Ag, busy, I, N, Im)
     <-  .wait(1000);
-        !selectAgent(order(Id, D));
+        !selectAgent(order(Id, Pref, D));
         .
 
 +!findMaxIAg
@@ -98,12 +98,15 @@
 
 // order finished
 
-+assembledSk(Id)[source(Ag)]
-    <-  .print("received ", assembledSk(Id));
-        addFact(assembledSk(Id));
++assembledBaseSk(Id)[source(Ag)]
+    <-  .print("received ", assembledBaseSk(Id));
+        addFact(assembledBaseSk(Id));
         .
 
-
++assembledOptionals(Id)[source(Ag)]
+    <-  .print("received ", assembledOptionals(Id));
+        addFact(assembledOptionals(Id));
+        .
 
 // ------------ Regulation Management -----------------------
 
@@ -131,23 +134,25 @@
 
 // send the obligation to the corresponding sca agent
 
-+obligation(Ag,Norm,assembledSk(Id),Deadline)
-   <-   .print(Ag, " is obliged to ", assembledSk(Id));
-        .send(Ag, achieve, assembledSk(Id), Deadline);
++obligation(Ag,Norm,What,Deadline)
+   <-   .print(Ag, " is obliged to ", What);
+        .send(Ag, achieve, What, Deadline);
         ?scaStatus(Ag, S, I, N, Im);
         -scaStatus(Ag, S, I, N, Im);
         +scaStatus(Ag, busy, Id, N+1, Im);
         !testStatus;
         .
 
-+oblFulfilled(obligation(Ag,Norm,assembledSk(Id),Deadline))
-    <-  .print("FULFILLED obligation: ", obligation(Ag,Norm,assembledSk(Id),Deadline));
-        ?play(Cca, customer, skgroup);
-        .send(Cca, signal, completeOrder(Id));
++oblFulfilled(obligation(Ag,Norm,What,Deadline))
+    <-  .print("FULFILLED obligation: ", obligation(Ag,Norm,assembledBaseSk(Id),Deadline));
+        if ((order(Id, Ag, base, D) & assembledBaseSk(Id)) | (order(Id, Ag, optionals, D) & assembledBaseSk(Id) & assembledOptionals(Id))) {
+            ?play(Cca, customer, skgroup);
+            .send(Cca, signal, completeOrder(Id));
+        }
         .
 
-+oblUnfulfilled(obligation(Ag,Norm,assembledSk(Id),Deadline))
-    <-  .print("UNFULFILLED obligation: ", obligation(Ag,Norm,assembledSk(Id),Deadline));
++oblUnfulfilled(obligation(Ag,Norm,assembledBaseSk(Id),Deadline))
+    <-  .print("UNFULFILLED obligation: ", obligation(Ag,Norm,assembledBaseSk(Id),Deadline));
         ?play(Cca, customer, skgroup);
         .send(Cca, signal, delayOrder(Id));
         .
