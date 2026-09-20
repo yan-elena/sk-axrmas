@@ -37,7 +37,7 @@
             !sendOrder(ID, basic);
           }
 
-          .wait(R * 3000);
+          .wait(R * 5000);
           !simOrder;
           .
 

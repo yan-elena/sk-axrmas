@@ -34,13 +34,6 @@ ordersQueue(0, 0).
         !start.
 
 
-+!testStatus
-   <-   for (scaStatus(Ag, Status, Id, Completed, Image)) {
-            .print(scaStatus(Ag, Status, Id, Completed, Image));
-        }
-        .
-
-
 // Adaptation (Coded In the plans approach)
 
 // when the orders in the queue are greater than 10, triggers the adaptation...
@@ -48,13 +41,15 @@ ordersQueue(0, 0).
      <- .print("TOO MANY ORDERS IN THE QUEUE!!");
         addFact(bottleneck);
         +bottleneck;
+        .print("---- BOTTLENECK!!! ----")
         .
 
 
 +bottleneck
     <-  getNorm(n2, Cond, Cons);
         modifyNorm(n2, order(Id, Ag, optionals, D), Cons);
-        .print("---- NORM n2 MODIFIED ----");
+        getNorm(n2, Cond2, Cons2);
+        .print("---- NORM n2 MODIFIED ---- to: ", Cond2, " ", Cons2);
         .
 
 // Assign order to sca agents
@@ -63,7 +58,6 @@ ordersQueue(0, 0).
 +order(Id, Pref, D)
     <-  ?ordersQueue(R, A);
         -+ordersQueue(R+1, A);
-        !testStatus;
         !selectAgent(order(Id, Pref, D));
         .
 
@@ -131,16 +125,14 @@ ordersQueue(0, 0).
 
 
 +!enforceExecute(Sanctionee, increaseImage(X))
-   <-   !testStatus;
-        ?scaStatus(Sanctionee, S, Id, N, Im);
+   <-   ?scaStatus(Sanctionee, S, Id, N, Im);
         -scaStatus(Sanctionee, S, Id, N, Im);
         +scaStatus(Sanctionee, S, Id, N,Im+X);
         .print("execute enforce capability on ", Sanctionee, " new reputation: ",Im+X);
         .
 
 +!enforceExecute(Sanctionee, decreaseImage(X))
-   <-   !testStatus;
-        ?scaStatus(Sanctionee, S, Id, N, Im);
+   <-   ?scaStatus(Sanctionee, S, Id, N, Im);
         -scaStatus(Sanctionee, S, Id, N, Im);
         +scaStatus(Sanctionee, S, Id, N,Im-X);
         .print("execute enforce capability on ", Sanctionee, " new reputation: ",Im-X);
@@ -159,7 +151,6 @@ ordersQueue(0, 0).
         ?scaStatus(Ag, S, I, N, Im);
         -scaStatus(Ag, S, I, N, Im);
         +scaStatus(Ag, busy, Id, N+1, Im);
-        !testStatus;
         .
 
 +oblFulfilled(obligation(Ag,Norm,What,Deadline))
