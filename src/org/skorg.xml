@@ -15,7 +15,7 @@
 
         <role-definitions>
             <role id="customer"/>
-            <role id="skGovernor"/>
+            <role id="skController"/>
             <role id="skHandler" />
             <role id="rmController"/>
             <role id="wkHandler"/>
@@ -28,7 +28,7 @@
         <group-specification id="skgroup">
             <roles>
                 <role id="customer"/>
-                <role id="skGovernor"/>
+                <role id="skController"/>
                 <role id="skHandler" min="1"/>
                 <role id="trunkWsHandler"/>
                 <role id="wheelWsHandler"/>

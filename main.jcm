@@ -12,7 +12,7 @@
 mas main {
 
     // Domain Regulation Management Agent
-    agent gov: domain/gov.asl {
+    agent skcon: domain/skcon.asl {
         beliefs: bottleneckThreshold(6), proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
         focus: clock
     }
@@ -65,7 +65,7 @@ mas main {
                       wwa wheelWsHandler
                       owa optionalWsHandler
                       qwa qualityWsHandler
-                      gov skGovernor
+                      skcon skController
                       ca rmController
          }
          scheme s1: assemblySkSch

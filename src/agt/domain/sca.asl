@@ -29,7 +29,7 @@ handleSkateboard(0, none).
 +assembled(wheels) : handleSkateboard(Id, SkArt)
     <-  .print("wheel installed on ", Id);
         assemblyWheels;
-        ?play(Ag, skGovernor, skgroup);
+        ?play(Ag, skController, skgroup);
         .send(Ag, tell, assembledBaseSk(Id)); //done
         .
 
@@ -51,7 +51,7 @@ handleSkateboard(0, none).
      //?play(WAg, qualityWsHandler, skgroup);
      //.send(WAg, achieve, checkQuality(SkArt));
 
-    ?play(Ag, skGovernor, skgroup);
+    ?play(Ag, skController, skgroup);
     .send(Ag, tell, assembledOptionals(Id)); //done
      .
 

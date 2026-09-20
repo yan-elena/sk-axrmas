@@ -67,7 +67,7 @@
 
 +!sendOrder(ID, Pref)
     <-  
-        ?play(Gov, skGovernor, skgroup);
+        ?play(Gov, skController, skgroup);
         ?nticks(Time);
         Deadline = Time + 25000;
         .send(Gov, signal, order(ID, Pref, nticks(Deadline)));
