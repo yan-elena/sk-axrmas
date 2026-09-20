@@ -13,7 +13,7 @@ mas main {
 
     // Domain Regulation Management Agent
     agent skcon: domain/skcon.asl {
-        beliefs: bottleneckThreshold(6), proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
+        beliefs: bottleneckThreshold(10), proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
         focus: clock
     }
 

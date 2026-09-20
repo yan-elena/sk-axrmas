@@ -1,9 +1,12 @@
+// number of orders (Received, Assigned)
+ordersQueue(0, 0).
+
 !start.
 
 
 // ------------ Organization Management -----------------------
 +!start : formationStatus(ok)
-   <-   makeArtifact(nb1,"ora4mas.nopl.NormativeBoard",[],AId);
+   <-   makeArtifact(nb1,"adaptation.AdaptiveNormativeBoard",[],AId);
         focus(AId);
         debug(inspector_gui(on));
         .print("load norms...");
@@ -38,17 +41,32 @@
         .
 
 
-+scaStatus(Ag, Status, Id, Completed, Image)
-    <-  .print("TEST:::: ", scaStatus(Ag, Status, Id, Completed, Image));
+// Adaptation (Coded In the plans approach)
+
+// when the orders in the queue are greater than 10, triggers the adaptation...
++ordersQueue(R, A) : bottleneckThreshold(T) & R  - A = T
+     <- .print("TOO MANY ORDERS IN THE QUEUE!!");
+        addFact(bottleneck);
+        +bottleneck;
+        .
+
+
++bottleneck
+    <-  getNorm(n2, Cond, Cons);
+        modifyNorm(n2, order(Id, Ag, optionals, D), Cons);
+        .print("---- NORM n2 MODIFIED ----");
         .
 
 // Assign order to sca agents
 
 
 +order(Id, Pref, D)
-    <-  !testStatus;
+    <-  ?ordersQueue(R, A);
+        -+ordersQueue(R+1, A);
+        !testStatus;
         !selectAgent(order(Id, Pref, D));
         .
+
 
 +!selectAgent(order(Id, Pref, D))
     <-  .print("selecting agent for order ", Id);
@@ -61,7 +79,6 @@
         } else {
             .print("no free agent now, wait...");
             .wait(1000);
-            !selectAgent(order(Id, Pref, D));
         }
         .
 
@@ -74,6 +91,8 @@
         ?play(Cca, customer, skgroup);
         .send(Cca, signal, startOrder(Id));
         addFact(order(Id, Ag, Pref, D));
+        ?ordersQueue(R, A);
+        -+ordersQueue(R, A+1);
         .print("order ", Id, " assigned to agent ", Ag);
         .
 
