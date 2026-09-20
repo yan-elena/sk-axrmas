@@ -18,11 +18,11 @@
             <role id="skController"/>
             <role id="skHandler" />
             <role id="rmController"/>
-            <role id="wkHandler"/>
-            <role id="trunkWsHandler">  <extends role="wkHandler"/>  </role>
-            <role id="wheelWsHandler">  <extends role="wkHandler"/>  </role>
-            <role id="optionalWsHandler">  <extends role="wkHandler"/>  </role>
-            <role id="qualityWsHandler">  <extends role="wkHandler"/>  </role>
+            <role id="wsHandler"/>
+            <role id="trunkWsHandler">  <extends role="wsHandler"/>  </role>
+            <role id="wheelWsHandler">  <extends role="wsHandler"/>  </role>
+            <role id="optionalWsHandler">  <extends role="wsHandler"/>  </role>
+            <role id="qualityWsHandler">  <extends role="wsHandler"/>  </role>
         </role-definitions>
 
         <group-specification id="skgroup">
