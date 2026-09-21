@@ -65,7 +65,7 @@ ordersQueue(0, 0).
 +!realized(detect, [ordersQueue(R, A), NId])
     <-  .print("Detect: no need for regulation adaptation");
         .wait(2000);
-        !realized(detect, ordersQueue(R, A), NId);
+        //!realized(detect, [ordersQueue(R, A), NId]);
         .
 
 @design_plan
@@ -81,10 +81,12 @@ ordersQueue(0, 0).
 @execute_plan
 +!realized(execute, [NId, [Cond, Cons], modifyNorm])
     <-  modifyNorm(NId, Cond, Cons);
-        addRmFact(executed(NID, [Cond, Cons], modifyNorm));
+        addRmFact(executed(NID, [[Cond, Cons], modifyNorm]));
         getNorm(NId, Cond2, Cons2);
         .print("---- NORM ", NId, " EXECUTED ADAPTATION ---- to: ", Cond2, " ", Cons2);
         .
+
+
 
 // Assign order to sca agents
 
@@ -120,7 +122,7 @@ ordersQueue(0, 0).
     <-  .print("assign order ", Id, " to agent ", Ag);
         ?play(Cca, customer, skgroup);
         .send(Cca, signal, startOrder(Id));
-        addRmFact(order(Id, Ag, Pref, D));
+        addFact(order(Id, Ag, Pref, D));
         ?ordersQueue(R, A);
         removeRmFact(ordersQueue(R, A));
         addRmFact(ordersQueue(R, A+1));

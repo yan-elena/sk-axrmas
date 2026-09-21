@@ -11,18 +11,9 @@
 
 mas main {
 
-    // Domain Regulation Management Agent
-    agent skcon: domain/skcon.asl {
-        beliefs: bottleneckThreshold(10), proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
-        focus: clock, sk_inst.sk_inst_art, rm
-    }
 
 
     // Domain Application Agents
-    agent cca: domain/cca.asl {
-        focus: wsk.clock
-    }
-
     agent twa: domain/wca.asl {
         focus: wsk.tw
         beliefs: artName(tw)
@@ -47,6 +38,17 @@ mas main {
         join: wsk
         instances: 5
     }
+
+    agent cca: domain/cca.asl {
+        focus: wsk.clock
+    }
+
+    // Domain Regulation Management Agent
+    agent skcon: domain/skcon.asl {
+        beliefs: bottleneckThreshold(10), proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
+        focus: clock, sk_inst.sk_inst_art, rm
+    }
+
 
      workspace wsk {
          artifact tw : TrunkWkArtifact()

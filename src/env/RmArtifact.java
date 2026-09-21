@@ -17,11 +17,24 @@ public class RmArtifact extends Artifact {
     }
 
     @OPERATION
+    public void addSignal(String event) {
+        try {
+            Literal l = parseLiteral(event);
+            signal(RM_ATOM.toString(), l);
+            log("SIGNAL::: " + l + " " + l.getSources());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @OPERATION
     public void addRmFact(String fact) {
         try {
             Literal l = parseLiteral(fact);
 //            l.addSource(RM_ATOM);
             if (l.hasTerm()) {
+
+                log("ADD FACT::: " + l.getFunctor() + " " + l.getTerms());
                 defineObsProperty(l.getFunctor(), l.getTerms());
             } else  {
                 defineObsProperty(l.getFunctor());

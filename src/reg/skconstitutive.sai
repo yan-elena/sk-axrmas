@@ -5,14 +5,14 @@ states: required(Cap, Args), realized(Cap, Args) .
 
 constitutive_rules:
 
-1: count-as required(detect, [ordersQueue(R, A)]) when ordersQueue(R, A).
+1: ordersQueue(rm, [R, A]) count-as required(detect, [ordersQueue(R, A)])  while (R > A).
 
-2: bottleneck count-as realized(detect, [nSai2]) .
+2: bottleneck(rm) count-as realized(detect, [nSai2]) .
 
-3: realized(detected, [NId]) count-as required(design, [NId]) .
+3: realized(detect, [NId]) count-as required(design, [NId]) .
 
-4: designed(N2, Op) count-as realized(design, [NId, N2, Op]) while required(design, [NId]) .
+4: designed(rm, [N2, Op]) count-as realized(design, [NId, N2, Op]) while required(design, [NId]) .
 
 5: realized(design, [NId, N2, Op]) count-as required(execute, [NId, N2, Op]) .
 
-6: executed(NId, N2, Op) count-as realized(execute, [N2, Op]) while required(execute, [NId, N2, Op]).
+6: executed(rm, [NId, N2, Op]) count-as realized(execute, [N2, Op]) while required(execute, [NId, N2, Op]).
