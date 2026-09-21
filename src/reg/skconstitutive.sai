@@ -1,24 +1,18 @@
-institution_id : test.
-
+institution_id : sk_inst .
 
 status_functions:
-
-
-
-events: b(V).
-
-states: oblUnfulfilled(O), vl(V), extra(V), sanct(V), detect(O).
-
-
+states: required(Cap, Args), realized(Cap, Args) .
 
 constitutive_rules:
 
+1: ordersQueue(R, A) count-as required(detect, [ordersQueue(R, A)]) .
 
+2: bottleneck count-as realized(detect, [n2]) .
 
-1: nticks(clock,V) count-as  vl(5000) while V>=5000. /*any value exceeding 5000 count-as 5000 (to not activate multiple norms)*/
+3: realized(detected, [NId]) count-as required(design, [NId]) .
 
-2: nticks(clock,V) count-as extra(2) while V>=5000.
+4: designed(N2, Op) count-as realized(design, [NId, N2, Op]) while required(design, [NId]) .
 
-3: count-as detect(O) while oblUnfulfilled(O).
+5: realized(design, [NId, N2, Op]) count-as required(execute, [NId, N2, Op]) .
 
-4: count-as sanct(0) .
+6: executed(Nid, N2, Op) count-as realized(execute, [N2, Op]) while required(execute, [NId, N2, Op]).

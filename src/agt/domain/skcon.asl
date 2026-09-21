@@ -37,14 +37,14 @@ ordersQueue(0, 0).
 
 
 //connect norms to institution
-+!setup_sai: focusing(ArtSai,inst_test_art,_,_,inst_test,_) & focusing(NplArt,anb,_,_,_,_) <-
++!setup_sai: focusing(ArtSai,sk_inst_art,_,_,sk_inst,_) & focusing(NplArt,anb,_,_,_,_) <-
    getSaiEngine(SE)[artifact_id(ArtSai)];
    setInstitution(SE)[artifact_id(NplArt)];
    .print("connected: ", ArtSai, NplArt);
   .
 
 +!setup_sai<-
-    .wait(focusing(ArtSai,inst_test_art,_,_,inst_test,_) & focusing(NplArt,anb,_,_,_,_));
+    .wait(focusing(ArtSai,sk_inst_art,_,_,sk_inst,_) & focusing(NplArt,anb,_,_,_,_));
     !setup_sai.
 
 

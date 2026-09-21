@@ -14,7 +14,7 @@ mas main {
     // Domain Regulation Management Agent
     agent skcon: domain/skcon.asl {
         beliefs: bottleneckThreshold(10), proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
-        focus: clock, inst_test.inst_test_art
+        focus: clock, sk_inst.sk_inst_art
     }
 
 
@@ -57,7 +57,7 @@ mas main {
      }
 
 
-     institution inst_test:src/reg/skconstitutive.sai{
+     institution sk_inst:src/reg/skconstitutive.sai{
         workspaces: wsk
      }
 
