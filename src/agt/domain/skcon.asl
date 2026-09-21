@@ -64,14 +64,14 @@ ordersQueue(0, 0).
 +!detected(bottleneck)
     <-  getNorm(nSai2, Cond, Cons);
         Cond2 = order(Id, Ag, optionals, D);
-        !designed(n2, Cond2, Cons);
+        !designed(nSai2, Cond2, Cons);
         .print("DESIGNED NORM: ", n2, " IF ", Cond, " THEN ", Cons);
         .
 
 @execute_plan
-+!designed(n2, Cond, Cons)
-    <-  modifyNorm(n2, Cond, Cons);
-        getNorm(n2, Cond2, Cons);
++!designed(Id, Cond, Cons)
+    <-  modifyNorm(Id, Cond, Cons);
+        getNorm(Id, Cond2, Cons2);
         .print("---- NORM n2 EXECUTED ADAPTATION ---- to: ", Cond2, " ", Cons2);
         .
 
