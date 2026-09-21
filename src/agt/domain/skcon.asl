@@ -26,7 +26,7 @@ ordersQueue(0, 0).
             }
         }
 
-        addRmFact(ordersQueue(0, 0));
+        addSkFact(ordersQueue(0, 0));
 
         +maxIAg(A, 0);
 
@@ -58,7 +58,7 @@ ordersQueue(0, 0).
 @detect_plan
 +!realized(detect, [ordersQueue(R, A), NId]) : bottleneckThreshold(T) & R - A = T
     <-  .print("DETECTED TOO MANY ORDERS IN THE QUEUE!!");
-        addRmFact(bottleneck);
+        addSkFact(bottleneck);
         .print("BOTTLENECK!!!");
         .
 
@@ -74,14 +74,14 @@ ordersQueue(0, 0).
         Cond2 = order(Id, Ag, optionals, D);
         N2 = [Cond, Cons];
         Op = modifyNorm;
-        addRmFact(designed(N2, Op));
+        addSkFact(designed(N2, Op));
         .print("DESIGNED NORM: ", n2, " Cond: ", Cond, " Cons ", Cons, " Op: ", Op);
         .
 
 @execute_plan
 +!realized(execute, [NId, [Cond, Cons], modifyNorm])
     <-  modifyNorm(NId, Cond, Cons);
-        addRmFact(executed(NID, [[Cond, Cons], modifyNorm]));
+        addSkFact(executed(NId, [[Cond, Cons], modifyNorm]));
         getNorm(NId, Cond2, Cons2);
         .print("---- NORM ", NId, " EXECUTED ADAPTATION ---- to: ", Cond2, " ", Cons2);
         .
@@ -93,8 +93,8 @@ ordersQueue(0, 0).
 
 +order(Id, Pref, D)
     <-  ?ordersQueue(R, A);
-        removeRmFact(ordersQueue(R, A));
-        addRmFact(ordersQueue(R+1, A));
+        removeSkFact(ordersQueue(R, A));
+        addSkFact(ordersQueue(R+1, A));
         -+ordersQueue(R+1, A);
         !selectAgent(order(Id, Pref, D));
         .
@@ -124,8 +124,8 @@ ordersQueue(0, 0).
         .send(Cca, signal, startOrder(Id));
         addFact(order(Id, Ag, Pref, D));
         ?ordersQueue(R, A);
-        removeRmFact(ordersQueue(R, A));
-        addRmFact(ordersQueue(R, A+1));
+        removeSkFact(ordersQueue(R, A));
+        addSkFact(ordersQueue(R, A+1));
         -+ordersQueue(R, A+1);
         .print("order ", Id, " assigned to agent ", Ag);
         .

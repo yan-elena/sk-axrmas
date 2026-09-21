@@ -1,6 +1,5 @@
 import cartago.Artifact;
 import cartago.OPERATION;
-import cartago.ObsProperty;
 import jason.asSyntax.Atom;
 import jason.asSyntax.Literal;
 import jason.asSyntax.Term;
@@ -8,9 +7,9 @@ import jason.asSyntax.parser.ParseException;
 
 import static jason.asSyntax.ASSyntax.parseLiteral;
 
-public class RmArtifact extends Artifact {
+public class SkArtifact extends Artifact {
 
-    private static final Term RM_ATOM = new Atom("rm");;
+    private static final Term RM_ATOM = new Atom("sk");;
 
     void init() {
         log("Artifact initialized");
@@ -28,7 +27,7 @@ public class RmArtifact extends Artifact {
     }
 
     @OPERATION
-    public void addRmFact(String fact) {
+    public void addSkFact(String fact) {
         try {
             Literal l = parseLiteral(fact);
 //            l.addSource(RM_ATOM);
@@ -45,7 +44,7 @@ public class RmArtifact extends Artifact {
     }
 
     @OPERATION
-    public void removeRmFact(String fact) {
+    public void removeSkFact(String fact) {
         try {
             Literal l = parseLiteral(fact);
             if (l.hasTerm()) {

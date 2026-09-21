@@ -33,7 +33,7 @@ scope main {
 
     // regulative norm for governing the realization of the execute reuglation sub-capability
     norm rnsp3: required(execute, [NId, N2, Op])  & play(Ag, skController, skgroup)
-        -> obligation(Ag, rnsp3, realized(execute, [N2, Op]), false)
+        -> obligation(Ag, rnsp3, realized(execute, [NId, N2, Op]), false)
         .
 
 }

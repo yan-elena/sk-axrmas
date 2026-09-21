@@ -46,7 +46,7 @@ mas main {
     // Domain Regulation Management Agent
     agent skcon: domain/skcon.asl {
         beliefs: bottleneckThreshold(10), proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
-        focus: clock, sk_inst.sk_inst_art, rm
+        focus: clock, sk_inst.sk_inst_art, sk
     }
 
 
@@ -56,7 +56,7 @@ mas main {
          artifact ow : OptionalWkArtifact()
          artifact qw : QualityWkArtifact()
          artifact clock : cartago.tools.Clock()
-         artifact rm : RmArtifact()
+         artifact sk : SkArtifact()
      }
 
 
