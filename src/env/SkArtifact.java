@@ -37,7 +37,9 @@ public class SkArtifact extends Artifact {
     @OPERATION
     public void removeSkFact(String fact) {
         try {
-            removeObsPropertyByTemplate(SK, parseLiteral(fact));
+            if (hasObsPropertyByTemplate(SK, parseLiteral(fact))) {
+                removeObsPropertyByTemplate(SK, parseLiteral(fact));
+            }
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

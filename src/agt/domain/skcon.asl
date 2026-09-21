@@ -99,55 +99,55 @@ ordersQueue(0, 0).
         !selectAgent(order(Id, Pref, D));
         .
 
+//findMaxIAg(MAg, MIm) :-    .findall(Im, scaStatus(Ag, free, Id, N, Im), L) &
+//                .max(L, MIm) &
+//                scaStatus(MAg, free, MId, MN, MIm) .
 
 +!selectAgent(order(Id, Pref, D))
     <-  .print("selecting agent for order ", Id);
 
-        !findMaxIAg;
+    /*
+        !findMaxIAg(MAg, MIm);
 
-        if (maxIAg(M, Im)) {
-            .print("agent with MAX reputation: ", M);
-            !assignOrder(Id, M, Pref, D);
+        if (MAg \== -1) {
+            .print("agent with MAX reputation: ", MAg);
+            !assignOrder(Id, MAg, Pref, D);
         } else {
             .print("no free agent now, wait...");
-            .wait(1000);
+            !!selectAgent(order(Id, Pref, D));
         }
-        .
-
-+!assignOrder(Id, Ag, Pref, D) : scaStatus(Ag2, busy, Id, N, Im)
-    <-  .print("agent ", Ag2, " is busy with order ", Id);
-        .
-
-+!assignOrder(Id, Ag, Pref, D) : scaStatus(Ag, free, I, N, Im)
-    <-  .print("assign order ", Id, " to agent ", Ag);
-        ?play(Cca, customer, skgroup);
-        .send(Cca, signal, startOrder(Id));
-        addFact(order(Id, Ag, Pref, D));
-        ?ordersQueue(R, A);
-        addSkFact(ordersQueue(R, A+1));
-        removeSkFact(ordersQueue(R, A));
-        -+ordersQueue(R, A+1);
-        .print("order ", Id, " assigned to agent ", Ag);
-        .
-
-+!assignOrder(Id, Ag, Pref, D) : scaStatus(Ag, busy, I, N, Im)
-    <-  .wait(1000);
-        !selectAgent(order(Id, Pref, D));
-        .
-
-+!findMaxIAg
-    <-  -maxIAg(_, _);
-        for (scaStatus(Ag, free, I, N, Im)) {
-            if (maxIAg(MAg, MIm) & Im>= MIm) {
-                    -maxIAg(MAg, MIm);
-                    +maxIAg(Ag, Im);
-                    .print("agent maxIm: ", maxIAg(Ag, Im));
-            } else {
-                +maxIAg(Ag, Im);
-                .print("agent maxIm: ", maxIAg(Ag, Im));
-            }
+*/
+        if (scaStatus(Ag, free, I, N, Im)) {
+            .print("free agent: ", Ag);
+            addFact(order(Id, Ag, Pref, D));
+            ?ordersQueue(R, A);
+            addSkFact(ordersQueue(R, A+1));
+            removeSkFact(ordersQueue(R, A));
+            -+ordersQueue(R, A+1);
+            ?play(Cca, customer, skgroup);
+            .send(Cca, signal, startOrder(Id));
+        } else {
+            .print("no free agent now, wait...");
+            .wait(500);
+            !selectAgent(order(Id, Pref, D));
         }
+
         .
+
+
++!findMaxIAg(MaxAg, MaxIm)
+    <-  .findall([Im, Ag], scaStatus(Ag, free, _, _, Im), List);
+
+        .print("FIND MAX::: ", List);
+          if (List \== []) {
+             .max(List, [MaxIm, MaxAg]); // 2. Trova il massimo (confronta prima il primo elemento della tupla: Im)
+             .print("Agent maxIm: ", maxIAg(MaxAg, MaxIm));
+          } else {
+            MaxAg=-1;
+            MaxIm=-1;
+          }
+        .
+
 
 // order finished
 
@@ -182,7 +182,7 @@ ordersQueue(0, 0).
 
 +obligation(Ag,Norm,What,Deadline) : .my_name(Ag)
    <-   .print("I am obliged to ", What);
-        !What;
+        !!What;
         .
 
 // send the obligation to the corresponding sca agent
