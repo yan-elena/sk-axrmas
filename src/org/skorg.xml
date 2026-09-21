@@ -25,16 +25,27 @@
             <role id="qualityWsHandler">  <extends role="wsHandler"/>  </role>
         </role-definitions>
 
-        <group-specification id="skgroup">
-            <roles>
-                <role id="customer"/>
-                <role id="skController"/>
-                <role id="skHandler" min="1"/>
-                <role id="trunkWsHandler"/>
-                <role id="wheelWsHandler"/>
-                <role id="optionalWsHandler"/>
-                <role id="qualityWsHandler"/>
-            </roles>
+        <group-specification id="skrmas">
+            <subgroups>
+                <group-specification id="skgroup">
+                    <roles>
+                        <role id="customer"/>
+                        <role id="skController"/>
+                        <role id="skHandler" min="1"/>
+                        <role id="trunkWsHandler"/>
+                        <role id="wheelWsHandler"/>
+                        <role id="optionalWsHandler"/>
+                        <role id="qualityWsHandler"/>
+                    </roles>
+                </group-specification>
+
+                <group-specification id="rmgroup">
+                    <roles>
+                        <role id="skController"/>
+                        <role id="rmController"/>
+                    </roles>
+                </group-specification>
+            </subgroups>
         </group-specification>
     </structural-specification>
 

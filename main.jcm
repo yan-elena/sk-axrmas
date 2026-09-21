@@ -45,10 +45,16 @@ mas main {
 
     // Domain Regulation Management Agent
     agent skcon: domain/skcon.asl {
-        beliefs: bottleneckThreshold(10), proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
+        beliefs: bottleneckThreshold(10)
         focus: clock, sk_inst.sk_inst_art, sk
     }
 
+    // Process and Architecture Regulation Management Agent
+    agent rmcon: regulation/rmcon.asl {
+        ag-class: log.AdaptiveNormativeLogAg("src/reg/rmregulative.npl", "src/reg/rmconstitutive.sai")
+        beliefs: proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
+        focus: clock, sk
+    }
 
      workspace wsk {
          artifact tw : TrunkWkArtifact()
@@ -57,6 +63,7 @@ mas main {
          artifact qw : QualityWkArtifact()
          artifact clock : cartago.tools.Clock()
          artifact sk : SkArtifact()
+         //artifact rm : RmArtifact()
      }
 
 
@@ -64,7 +71,8 @@ mas main {
         workspaces: wsk
      }
 
-     organisation skorg {
+
+     organisation skrmas : skorg.xml {
          group skgroup: skgroup {
              responsible-for: s1
              players: cca customer
@@ -74,7 +82,10 @@ mas main {
                       owa optionalWsHandler
                       qwa qualityWsHandler
                       skcon skController
-                      ca rmController
+         }
+         group rmgroup: rmgroup {
+            players:  rmcon rmController
+                      skcon skController
          }
          scheme s1: assemblySkSch
      }

@@ -2,6 +2,7 @@ bin
 .gradle
 build
 .idea
+log
 
 # Compiled class file
 *.class

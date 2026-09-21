@@ -1,0 +1,18 @@
+scope main {
+
+    // regulative norm for governing the realization of the detect reuglation sub-capability
+    norm rnsp1: required(detect, [ordersQueue(R, A)]) & play(Ag, skController, skgroup) & not realized(detect, [nSai2])
+        -> obligation(Ag, rnsp1, realized(detect, [ordersQueue(R, A), NId]), false)
+        .
+
+    // regulative norm for governing the realization of the design reuglation sub-capability
+    norm rnsp2: required(design, [NId]) & play(Ag, skController, skgroup)
+        -> obligation(Ag, rnsp2, realized(design, [NId, N2]), false)
+        .
+
+    // regulative norm for governing the realization of the execute reuglation sub-capability
+    norm rnsp3: required(execute, [NId, N2, Op])  & play(Ag, skController, skgroup)
+        -> obligation(Ag, rnsp3, realized(execute, [NId, N2, Op]), false)
+        .
+
+}

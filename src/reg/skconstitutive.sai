@@ -1,18 +1,10 @@
 institution_id : sk_inst .
 
 status_functions:
-states: required(Cap, Args), realized(Cap, Args) .
+states: completed(Order) .
 
 constitutive_rules:
 
-1: ordersQueue(sk, [R, A]) count-as required(detect, [ordersQueue(R, A)])  while (R > A).
+1: assembledBaseSk(Id) count-as completed(order(Id, Ag, basic, D)) while order(Id, Ag, basic, D) .
 
-2: bottleneck(sk) count-as realized(detect, [nSai2]) .
-
-3: realized(detect, [NId]) count-as required(design, [NId]) .
-
-4: designed(sk, [N2, Op]) count-as realized(design, [NId, N2, Op]) while required(design, [NId]) .
-
-5: realized(design, [NId, N2, Op]) count-as required(execute, [NId, N2, Op]) .
-
-6: executed(sk, [NId, N2, Op]) count-as realized(execute, [NId, N2, Op]) while required(execute, [NId, N2, Op]).
+2: assembledOptionals(Id) count-as completed(order(Id, Ag, optionals, D)) while order(Id, Ag, optionals, D) & assembledBaseSk(Id).
