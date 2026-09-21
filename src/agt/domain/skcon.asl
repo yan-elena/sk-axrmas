@@ -13,6 +13,7 @@ ordersQueue(0, 0).
         .print("load norms...");
         load("src/reg/skregulative.npl");
 
+
         for (play(Ag, Role, Group)) {
             addFact(play(Ag, Role, Group));
             .print("add fact ", play(Ag, Role, Group));
@@ -24,6 +25,8 @@ ordersQueue(0, 0).
                 A=Ag;
             }
         }
+
+        addRmFact(ordersQueue(0, 0));
 
         +maxIAg(A, 0);
 
@@ -49,30 +52,38 @@ ordersQueue(0, 0).
 
 
 
-// Adaptation (Coded In the plans approach)
+// Adaptation plans
 
 // when the orders in the queue are greater than 10, triggers the adaptation...
 @detect_plan
-+ordersQueue(R, A) : bottleneckThreshold(T) & R  - A = T
-     <- .print("DETECTED TOO MANY ORDERS IN THE QUEUE!!");
-        addFact(bottleneck);
-        !detected(bottleneck);
-        .print("---- BOTTLENECK!!! ----")
++!realized(detect, [ordersQueue(R, A), NId]) : bottleneckThreshold(T) & R - A = T
+    <-  .print("DETECTED TOO MANY ORDERS IN THE QUEUE!!");
+        addRmFact(bottleneck);
+        .print("BOTTLENECK!!!");
+        .
+
++!realized(detect, [ordersQueue(R, A), NId])
+    <-  .print("Detect: no need for regulation adaptation");
+        .wait(2000);
+        !realized(detect, ordersQueue(R, A), NId);
         .
 
 @design_plan
-+!detected(bottleneck)
-    <-  getNorm(nSai2, Cond, Cons);
++!realized(design, [NId, N2])
+    <-  getNorm(NId, Cond, Cons);
         Cond2 = order(Id, Ag, optionals, D);
-        !designed(nSai2, Cond2, Cons);
-        .print("DESIGNED NORM: ", n2, " IF ", Cond, " THEN ", Cons);
+        N2 = [Cond, Cons];
+        Op = modifyNorm;
+        addRmFact(designed(N2, Op));
+        .print("DESIGNED NORM: ", n2, " Cond: ", Cond, " Cons ", Cons, " Op: ", Op);
         .
 
 @execute_plan
-+!designed(Id, Cond, Cons)
-    <-  modifyNorm(Id, Cond, Cons);
-        getNorm(Id, Cond2, Cons2);
-        .print("---- NORM n2 EXECUTED ADAPTATION ---- to: ", Cond2, " ", Cons2);
++!realized(execute, [NId, [Cond, Cons], modifyNorm])
+    <-  modifyNorm(NId, Cond, Cons);
+        addRmFact(executed(NID, [Cond, Cons], modifyNorm));
+        getNorm(NId, Cond2, Cons2);
+        .print("---- NORM ", NId, " EXECUTED ADAPTATION ---- to: ", Cond2, " ", Cons2);
         .
 
 // Assign order to sca agents
@@ -80,6 +91,8 @@ ordersQueue(0, 0).
 
 +order(Id, Pref, D)
     <-  ?ordersQueue(R, A);
+        removeRmFact(ordersQueue(R, A));
+        addRmFact(ordersQueue(R+1, A));
         -+ordersQueue(R+1, A);
         !selectAgent(order(Id, Pref, D));
         .
@@ -107,8 +120,10 @@ ordersQueue(0, 0).
     <-  .print("assign order ", Id, " to agent ", Ag);
         ?play(Cca, customer, skgroup);
         .send(Cca, signal, startOrder(Id));
-        addFact(order(Id, Ag, Pref, D));
+        addRmFact(order(Id, Ag, Pref, D));
         ?ordersQueue(R, A);
+        removeRmFact(ordersQueue(R, A));
+        addRmFact(ordersQueue(R, A+1));
         -+ordersQueue(R, A+1);
         .print("order ", Id, " assigned to agent ", Ag);
         .
@@ -161,14 +176,16 @@ ordersQueue(0, 0).
         .print("execute enforce capability on ", Sanctionee, " new reputation: ",Im-X);
         .
 
+// process regulation adaptation
+
 +obligation(Ag,Norm,What,Deadline) : .my_name(Ag)
-   <-   .print("I am obliged to ",What);
-        !What
+   <-   .print("I am obliged to ", What);
+        !What;
         .
 
 // send the obligation to the corresponding sca agent
 
-+obligation(Ag,Norm,What,Deadline)
++obligation(Ag,Norm,What,Deadline) : .my_name(Me) & Ag \== Me
    <-   .print(Ag, " is obliged to ", What);
         .send(Ag, achieve, What, Deadline);
         ?scaStatus(Ag, S, I, N, Im);
@@ -176,7 +193,7 @@ ordersQueue(0, 0).
         +scaStatus(Ag, busy, Id, N+1, Im);
         .
 
-+oblFulfilled(obligation(Ag,Norm,What,Deadline))
++oblFulfilled(obligation(Ag,Norm,What,Deadline)): .my_name(Me) & Ag \== Me
     <-  .print("FULFILLED obligation: ", obligation(Ag,Norm,assembledBaseSk(Id),Deadline));
         if ((order(Id, Ag, base, D) & assembledBaseSk(Id)) | (order(Id, Ag, optionals, D) & assembledBaseSk(Id) & assembledOptionals(Id))) {
             ?play(Cca, customer, skgroup);
@@ -184,7 +201,7 @@ ordersQueue(0, 0).
         }
         .
 
-+oblUnfulfilled(obligation(Ag,Norm,assembledBaseSk(Id),Deadline))
++oblUnfulfilled(obligation(Ag,Norm,assembledBaseSk(Id),Deadline)): .my_name(Me) & Ag \== Me
     <-  .print("UNFULFILLED obligation: ", obligation(Ag,Norm,assembledBaseSk(Id),Deadline));
         ?play(Cca, customer, skgroup);
         .send(Cca, signal, delayOrder(Id));
