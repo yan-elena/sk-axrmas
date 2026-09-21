@@ -6,7 +6,7 @@ ordersQueue(0, 0).
 
 // ------------ Organization Management -----------------------
 +!start : formationStatus(ok)
-   <-   makeArtifact(nb1,"adaptation.AdaptiveNormativeBoard",[],AId);
+   <-   makeArtifact(anb,"adaptation.AdaptiveNormativeBoard",[],AId);
         focus(AId);
         debug(inspector_gui(on));
         .print("load norms...");
@@ -37,19 +37,27 @@ ordersQueue(0, 0).
 // Adaptation (Coded In the plans approach)
 
 // when the orders in the queue are greater than 10, triggers the adaptation...
+@detect_plan
 +ordersQueue(R, A) : bottleneckThreshold(T) & R  - A = T
-     <- .print("TOO MANY ORDERS IN THE QUEUE!!");
+     <- .print("DETECTED TOO MANY ORDERS IN THE QUEUE!!");
         addFact(bottleneck);
-        +bottleneck;
+        !detected(bottleneck);
         .print("---- BOTTLENECK!!! ----")
         .
 
-
-+bottleneck
+@design_plan
++!detected(bottleneck)
     <-  getNorm(n2, Cond, Cons);
-        modifyNorm(n2, order(Id, Ag, optionals, D), Cons);
-        getNorm(n2, Cond2, Cons2);
-        .print("---- NORM n2 MODIFIED ---- to: ", Cond2, " ", Cons2);
+        Cond2 = order(Id, Ag, optionals, D);
+        !designed(n2, Cond2, Cons);
+        .print("DESIGNED NORM: ", n2, " IF ", Cond, " THEN ", Cons);
+        .
+
+@execute_plan
++!designed(n2, Cond, Cons)
+    <-  modifyNorm(n2, Cond, Con);
+        getNorm(n2, Cond2, Cons);
+        .print("---- NORM n2 EXECUTED ADAPTATION ---- to: ", Cond2, " ", Cons2);
         .
 
 // Assign order to sca agents
