@@ -34,7 +34,7 @@ public class SkArtifact extends Artifact {
             if (l.hasTerm()) {
 
                 log("ADD FACT::: " + l.getFunctor() + " " + l.getTerms());
-                defineObsProperty(l.getFunctor(), l.getTerms());
+                defineObsProperty(l.getFunctor(), l.getTerms()); //defineObsProperty("sk", l);
             } else  {
                 defineObsProperty(l.getFunctor());
             }
