@@ -14,7 +14,7 @@ mas main {
     // Domain Regulation Management Agent
     agent skcon: domain/skcon.asl {
         beliefs: bottleneckThreshold(10), proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
-        focus: clock
+        focus: clock, inst_test.inst_test_art
     }
 
 
@@ -56,6 +56,11 @@ mas main {
          artifact clock : cartago.tools.Clock()
      }
 
+
+     institution inst_test:src/reg/skconstitutive.sai{
+        workspaces: wsk
+     }
+
      organisation skorg {
          group skgroup: skgroup {
              responsible-for: s1
@@ -70,4 +75,5 @@ mas main {
          }
          scheme s1: assemblySkSch
      }
+
 }

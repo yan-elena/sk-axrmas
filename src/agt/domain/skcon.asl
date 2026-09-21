@@ -1,12 +1,13 @@
 // number of orders (Received, Assigned)
 ordersQueue(0, 0).
 
+!setup_sai.
 !start.
 
 
 // ------------ Organization Management -----------------------
 +!start : formationStatus(ok)
-   <-   makeArtifact(anb,"adaptation.AdaptiveNormativeBoard",[],AId);
+   <-   makeArtifact(anb,"adaptation.artifact.AdaptiveNormativeBoardSai",[],AId);
         focus(AId);
         debug(inspector_gui(on));
         .print("load norms...");
@@ -34,6 +35,20 @@ ordersQueue(0, 0).
         !start.
 
 
+
+//connect norms to institution
++!setup_sai: focusing(ArtSai,inst_test_art,_,_,inst_test,_) & focusing(NplArt,anb,_,_,_,_) <-
+   getSaiEngine(SE)[artifact_id(ArtSai)];
+   setInstitution(SE)[artifact_id(NplArt)];
+   .print("connected: ", ArtSai, NplArt);
+  .
+
++!setup_sai<-
+    .wait(focusing(ArtSai,inst_test_art,_,_,inst_test,_) & focusing(NplArt,anb,_,_,_,_));
+    !setup_sai.
+
+
+
 // Adaptation (Coded In the plans approach)
 
 // when the orders in the queue are greater than 10, triggers the adaptation...
@@ -47,7 +62,7 @@ ordersQueue(0, 0).
 
 @design_plan
 +!detected(bottleneck)
-    <-  getNorm(n2, Cond, Cons);
+    <-  getNorm(nSai2, Cond, Cons);
         Cond2 = order(Id, Ag, optionals, D);
         !designed(n2, Cond2, Cons);
         .print("DESIGNED NORM: ", n2, " IF ", Cond, " THEN ", Cons);
@@ -55,7 +70,7 @@ ordersQueue(0, 0).
 
 @execute_plan
 +!designed(n2, Cond, Cons)
-    <-  modifyNorm(n2, Cond, Con);
+    <-  modifyNorm(n2, Cond, Cons);
         getNorm(n2, Cond2, Cons);
         .print("---- NORM n2 EXECUTED ADAPTATION ---- to: ", Cond2, " ", Cons2);
         .
