@@ -56,20 +56,20 @@ ordersQueue(0, 0).
 
 // when the orders in the queue are greater than 10, triggers the adaptation...
 @detect_plan
-+!realized(detect, [ordersQueue(R, A), NId]) : bottleneckThreshold(T) & R - A = T
++!realized(detect, [bottleneck, NId]) : sk(ordersQueue(R,A)) & bottleneckThreshold(T) & R - A > T
     <-  .print("DETECTED TOO MANY ORDERS IN THE QUEUE!!");
-        addSkFact(bottleneck);
+        addSkFact(detected(bottleneck));
         .print("BOTTLENECK!!!");
         .
 
-+!realized(detect, [ordersQueue(R, A), NId])
++!realized(detect, [bottleneck, NId])
     <-  .print("Detect: no need for regulation adaptation");
         .wait(2000);
-        //!realized(detect, [ordersQueue(R, A), NId]);
+        !realized(detect, [bottleneck, NId]);
         .
 
 @design_plan
-+!realized(design, [NId, N2])
++!realized(design, [NId, N2, Op])
     <-  getNorm(NId, Cond, Cons);
         Cond2 = order(Id, Ag, optionals, D);
         N2 = [Cond, Cons];
@@ -93,8 +93,8 @@ ordersQueue(0, 0).
 
 +order(Id, Pref, D)
     <-  ?ordersQueue(R, A);
-        removeSkFact(ordersQueue(R, A));
         addSkFact(ordersQueue(R+1, A));
+        removeSkFact(ordersQueue(R, A));
         -+ordersQueue(R+1, A);
         !selectAgent(order(Id, Pref, D));
         .
@@ -124,8 +124,8 @@ ordersQueue(0, 0).
         .send(Cca, signal, startOrder(Id));
         addFact(order(Id, Ag, Pref, D));
         ?ordersQueue(R, A);
-        removeSkFact(ordersQueue(R, A));
         addSkFact(ordersQueue(R, A+1));
+        removeSkFact(ordersQueue(R, A));
         -+ordersQueue(R, A+1);
         .print("order ", Id, " assigned to agent ", Ag);
         .

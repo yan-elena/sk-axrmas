@@ -1,6 +1,6 @@
 
-// +sk(O)
-//    <- .print("PERCEIVED FACT FROM SK: ", O) .
++sk(O)
+    <- .print("PERCEIVED FACT FROM SK: ", O) .
 
 
 // Regulation Management

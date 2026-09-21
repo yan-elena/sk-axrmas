@@ -9,7 +9,7 @@ import static jason.asSyntax.ASSyntax.parseLiteral;
 
 public class SkArtifact extends Artifact {
 
-    private static final Term RM_ATOM = new Atom("sk");;
+    private static final String SK = "sk";
 
     void init() {
         log("Artifact initialized");
@@ -18,9 +18,7 @@ public class SkArtifact extends Artifact {
     @OPERATION
     public void addSignal(String event) {
         try {
-            Literal l = parseLiteral(event);
-            signal(RM_ATOM.toString(), l);
-            log("SIGNAL::: " + l + " " + l.getSources());
+            signal(SK, parseLiteral(event));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -28,16 +26,9 @@ public class SkArtifact extends Artifact {
 
     @OPERATION
     public void addSkFact(String fact) {
+        log("ADD FACT::: " + fact);
         try {
-            Literal l = parseLiteral(fact);
-//            l.addSource(RM_ATOM);
-            if (l.hasTerm()) {
-
-                log("ADD FACT::: " + l.getFunctor() + " " + l.getTerms());
-                defineObsProperty(l.getFunctor(), l.getTerms()); //defineObsProperty("sk", l);
-            } else  {
-                defineObsProperty(l.getFunctor());
-            }
+            defineObsProperty(SK, parseLiteral(fact));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -46,12 +37,16 @@ public class SkArtifact extends Artifact {
     @OPERATION
     public void removeSkFact(String fact) {
         try {
-            Literal l = parseLiteral(fact);
-            if (l.hasTerm()) {
-                removeObsPropertyByTemplate(l.getFunctor(), l.getTerms());
-            } else {
-                removeObsProperty(l.getFunctor());
-            }
+            removeObsPropertyByTemplate(SK, parseLiteral(fact));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @OPERATION
+    public void updateSkFact(String fact) {
+        try {
+            updateObsProperty(SK, parseLiteral(fact));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
