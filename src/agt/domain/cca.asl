@@ -30,7 +30,7 @@
           }
           +orderStatus(ID, received);
           .random(R);
-          if (R > 0.5) {
+          if (R > 0.3) {
             !sendOrder(ID, true);
           }
           else {
@@ -56,7 +56,6 @@
     setFrequency(1);
     start; //start the clock
 .
-
 
 
 { include("$jacamo/templates/common-cartago.asl") }

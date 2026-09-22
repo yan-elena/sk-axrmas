@@ -63,9 +63,12 @@
         !realized(detect, [bottleneck, NId]);
         .
 
+//design(Cond, order(Id, Ag, true, D)).
+
 @design_plan
 +!realized(design, [NId, N2, Op])
     <-  getNorm(NId, Cond, Cons);
+        //?designCond(Cond, Cond2);
         Cond2 = order(Id, Ag, true, D);
         Cons2 =  Cons; //test: obligation(Ag, Cond2, assemblyWheels(4), D);
         N2 = [Cond2, Cons2];
