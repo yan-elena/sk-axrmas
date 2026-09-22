@@ -41,7 +41,7 @@ mas main {
 
     agent cca: domain/cca.asl {
         focus: wsk.clock
-        beliefs: simuStep(8000)
+        beliefs: simuStep(3000)
     }
 
     // Domain Regulation Management Agent
@@ -54,7 +54,7 @@ mas main {
     agent rmcon: regulation/rmcon.asl {
         ag-class: log.AdaptiveNormativeLogAg("src/reg/rmregulative.npl", "src/reg/rmconstitutive.sai")
         beliefs: proc(enforce, [evaluate, execute]), arc(fcr, [ocr])
-        focus: clock, sk
+        focus: clock, sk, ord
     }
 
      workspace wsk {

@@ -56,8 +56,6 @@ public class OrderAssignmentsArtifact extends Artifact {
             if (!ordersQueue.contains(order)) {
                 this.ordersQueue.add(order);
                 log("order " + order + " added to the queue...");
-                log(orderAssignments.toString());
-                log(agentsAvailability.toString());
                 updateObsProperty("orderQueue", ordersQueue.size());
             }
         }

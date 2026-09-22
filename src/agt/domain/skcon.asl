@@ -1,6 +1,3 @@
-// number of orders (Received, Assigned)
-ordersQueue(0, 0).
-
 !setup_sai.
 !start.
 
@@ -25,8 +22,6 @@ ordersQueue(0, 0).
                 A=Ag;
             }
         }
-
-        addSkFact(ordersQueue(0, 0));
 
         +maxIAg(A, 0);
 
@@ -56,7 +51,7 @@ ordersQueue(0, 0).
 
 // when the orders in the queue are greater than 10, triggers the adaptation...
 @detect_plan
-+!realized(detect, [bottleneck, NId]) : sk(ordersQueue(R,A)) & bottleneckThreshold(T) & R - A > T
++!realized(detect, [bottleneck, NId]) : orderQueue(N) & bottleneckThreshold(T) & N > T
     <-  .print("DETECTED TOO MANY ORDERS IN THE QUEUE!!");
         addSkFact(detected(bottleneck));
         .print("BOTTLENECK!!!");
