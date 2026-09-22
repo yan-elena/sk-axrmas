@@ -1,13 +1,13 @@
 scope main {
 
-    norm n1: order(Id, Ag, Pref, D)
-        -> obligation(Ag, n1, assembledBaseSk(Id), D)
+    norm n1: order(Id, Ag, Pref, D) & not assembledBaseSk(Id)
+        -> obligation(Ag, true, assembledBaseSk(Id), D)
             if fulfilled: srs1(Ag, 10)
             if unfulfilled: srs2(Ag, 10)
         .
 
-    norm n2: assembledBaseSk(Id) & order(Id, Ag, optionals, D)
-        -> obligation(Ag, n2, assembledOptionals(Id), D)
+    norm n2: order(Id, Ag, true, D) & not assembledOptionals(Id)
+        -> obligation(Ag, true, assembledOptionals(Id), D)
             if fulfilled: srs1(Ag, 5)
             if unfulfilled: srs2(Ag, 5)
         .

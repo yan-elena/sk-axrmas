@@ -36,17 +36,18 @@ mas main {
 
     agent sca: domain/sca.asl {
         join: wsk
-        instances: 5
+        instances: 3
     }
 
     agent cca: domain/cca.asl {
         focus: wsk.clock
+        beliefs: simuStep(8000)
     }
 
     // Domain Regulation Management Agent
     agent skcon: domain/skcon.asl {
         beliefs: bottleneckThreshold(10)
-        focus: clock, sk_inst.sk_inst_art, sk
+        focus: clock, sk_inst.sk_inst_art, sk, ord
     }
 
     // Process and Architecture Regulation Management Agent
@@ -63,6 +64,7 @@ mas main {
          artifact qw : QualityWkArtifact()
          artifact clock : cartago.tools.Clock()
          artifact sk : SkArtifact()
+         artifact ord : OrderAssignmentsArtifact()
          //artifact rm : RmArtifact()
      }
 

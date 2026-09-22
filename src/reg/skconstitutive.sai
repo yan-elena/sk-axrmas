@@ -1,10 +1,11 @@
 institution_id : sk_inst .
 
 status_functions:
-states: completed(Order) .
+states: assembledBaseSk(Id), assembledOptionals(Id) .
 
 constitutive_rules:
 
-1: assembledBaseSk(Id) count-as completed(order(Id, Ag, basic, D)) while order(Id, Ag, basic, D) .
+1: assembled(wheel, Id) count-as assembledBaseSk(Id)  while assembled(trunk, Id) & order(Id, Ag, Pref, D) .
 
-2: assembledOptionals(Id) count-as completed(order(Id, Ag, optionals, D)) while order(Id, Ag, optionals, D) & assembledBaseSk(Id).
+2: assembled(connBox, Id) count-as assembledOptionals(Id) while order(Id, Ag, Pref, D) & assembled(rails, Id).
+

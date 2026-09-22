@@ -7,7 +7,7 @@ ordersQueue(0, 0).
 
 // ------------ Organization Management -----------------------
 +!start : formationStatus(ok)
-   <-   makeArtifact(anb,"adaptation.artifact.AdaptiveNormativeBoardSai",[],AId);
+   <-   makeArtifact(anb,"adaptation.artifact.AdaptiveRegulationBoard",[],AId);
         focus(AId);
         debug(inspector_gui(on));
         .print("load norms...");
@@ -18,10 +18,10 @@ ordersQueue(0, 0).
             addFact(play(Ag, Role, Group));
             .print("add fact ", play(Ag, Role, Group));
 
-            // fact that indicates the status of the sca agents (agName, status, currentOrderId, completedNumber, reputation)
 
             if(Role == skHandler) {
-                +scaStatus(Ag, free, -1, 0, 0);
+                +scaStatus(Ag, 0);
+                addAgent(Ag);
                 A=Ag;
             }
         }
@@ -71,7 +71,7 @@ ordersQueue(0, 0).
 @design_plan
 +!realized(design, [NId, N2, Op])
     <-  getNorm(NId, Cond, Cons);
-        Cond2 = order(Id, Ag, optionals, D);
+        Cond2 = order([Id, Ag, optionals, D]);
         N2 = [Cond, Cons];
         Op = modifyNorm;
         addSkFact(designed(N2, Op));
@@ -92,89 +92,49 @@ ordersQueue(0, 0).
 
 
 +order(Id, Pref, D)
-    <-  ?ordersQueue(R, A);
-        addSkFact(ordersQueue(R+1, A));
-        removeSkFact(ordersQueue(R, A));
-        -+ordersQueue(R+1, A);
-        !selectAgent(order(Id, Pref, D));
+    <-  addOrder(Id, Pref, D);
         .
 
-//findMaxIAg(MAg, MIm) :-    .findall(Im, scaStatus(Ag, free, Id, N, Im), L) &
-//                .max(L, MIm) &
-//                scaStatus(MAg, free, MId, MN, MIm) .
++order(Id, Ag, Pref, D)
+    <-
+        .print("PERCEIVED: ", order(Id, Ag, Pref, D));
+        addFact(order(Id, Ag, Pref, D)).
 
-+!selectAgent(order(Id, Pref, D))
-    <-  .print("selecting agent for order ", Id);
-
-    /*
-        !findMaxIAg(MAg, MIm);
-
-        if (MAg \== -1) {
-            .print("agent with MAX reputation: ", MAg);
-            !assignOrder(Id, MAg, Pref, D);
-        } else {
-            .print("no free agent now, wait...");
-            !!selectAgent(order(Id, Pref, D));
-        }
-*/
-        if (scaStatus(Ag, free, I, N, Im)) {
-            .print("free agent: ", Ag);
-            addFact(order(Id, Ag, Pref, D));
-            ?ordersQueue(R, A);
-            addSkFact(ordersQueue(R, A+1));
-            removeSkFact(ordersQueue(R, A));
-            -+ordersQueue(R, A+1);
-            ?play(Cca, customer, skgroup);
-            .send(Cca, signal, startOrder(Id));
-        } else {
-            .print("no free agent now, wait...");
-            .wait(500);
-            !selectAgent(order(Id, Pref, D));
-        }
-
++orderQueue(N)
+    <-  .wait(1000);
+        checkQueueAndAssign;
         .
-
-
-+!findMaxIAg(MaxAg, MaxIm)
-    <-  .findall([Im, Ag], scaStatus(Ag, free, _, _, Im), List);
-
-        .print("FIND MAX::: ", List);
-          if (List \== []) {
-             .max(List, [MaxIm, MaxAg]); // 2. Trova il massimo (confronta prima il primo elemento della tupla: Im)
-             .print("Agent maxIm: ", maxIAg(MaxAg, MaxIm));
-          } else {
-            MaxAg=-1;
-            MaxIm=-1;
-          }
-        .
-
 
 // order finished
 
 +assembledBaseSk(Id)[source(Ag)]
     <-  .print("received ", assembledBaseSk(Id));
+
         addFact(assembledBaseSk(Id));
+        completeBaseSkateboard(Id);
         .
 
 +assembledOptionals(Id)[source(Ag)]
     <-  .print("received ", assembledOptionals(Id));
         addFact(assembledOptionals(Id));
+
+        completeOptionalsSkateboard(Id);
         .
 
 // ------------ Regulation Management -----------------------
 
 
 +!enforceExecute(Sanctionee, increaseImage(X))
-   <-   ?scaStatus(Sanctionee, S, Id, N, Im);
-        -scaStatus(Sanctionee, S, Id, N, Im);
-        +scaStatus(Sanctionee, S, Id, N,Im+X);
+   <-   ?scaStatus(Sanctionee, Im);
+        +scaStatus(Sanctionee, Im+X);
+        -scaStatus(Sanctionee, Im);
         .print("execute enforce capability on ", Sanctionee, " new reputation: ",Im+X);
         .
 
 +!enforceExecute(Sanctionee, decreaseImage(X))
-   <-   ?scaStatus(Sanctionee, S, Id, N, Im);
-        -scaStatus(Sanctionee, S, Id, N, Im);
-        +scaStatus(Sanctionee, S, Id, N,Im-X);
+   <-   ?scaStatus(Sanctionee, Im);
+        +scaStatus(Sanctionee, Im-X);
+        -scaStatus(Sanctionee, Im);
         .print("execute enforce capability on ", Sanctionee, " new reputation: ",Im-X);
         .
 
@@ -188,25 +148,16 @@ ordersQueue(0, 0).
 // send the obligation to the corresponding sca agent
 
 +obligation(Ag,Norm,What,Deadline) : .my_name(Me) & Ag \== Me
-   <-   .print(Ag, " is obliged to ", What);
+   <-   .print("Obligation activated: ", obligation(Ag,Norm,What,Deadline));
         .send(Ag, achieve, What, Deadline);
-        ?scaStatus(Ag, S, I, N, Im);
-        -scaStatus(Ag, S, I, N, Im);
-        +scaStatus(Ag, busy, Id, N+1, Im);
         .
 
 +oblFulfilled(obligation(Ag,Norm,What,Deadline)): .my_name(Me) & Ag \== Me
     <-  .print("FULFILLED obligation: ", obligation(Ag,Norm,assembledBaseSk(Id),Deadline));
-        if ((order(Id, Ag, base, D) & assembledBaseSk(Id)) | (order(Id, Ag, optionals, D) & assembledBaseSk(Id) & assembledOptionals(Id))) {
-            ?play(Cca, customer, skgroup);
-            .send(Cca, signal, completeOrder(Id));
-        }
         .
 
 +oblUnfulfilled(obligation(Ag,Norm,assembledBaseSk(Id),Deadline)): .my_name(Me) & Ag \== Me
     <-  .print("UNFULFILLED obligation: ", obligation(Ag,Norm,assembledBaseSk(Id),Deadline));
-        ?play(Cca, customer, skgroup);
-        .send(Cca, signal, delayOrder(Id));
         .
 
 // enfoce capability
@@ -214,9 +165,6 @@ ordersQueue(0, 0).
 +sanction(Norm,Status,Sanctionee,Content)
    <-  .print("sanction ", sanction(Norm,Status,Sanctionee,Content));
        !enforceExecute(Sanctionee, Content);
-        ?scaStatus(Sanctionee, S, Id, N, Im);
-        -scaStatus(Sanctionee, S, Id, N, Im);
-        +scaStatus(Sanctionee, free, Id, N+1, Im);
        .
 
 

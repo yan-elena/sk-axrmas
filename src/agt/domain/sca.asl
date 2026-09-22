@@ -2,15 +2,23 @@ handleSkateboard(0, none).
 
 // assembly base parts
 
-+!assembledBaseSk(Id)
-    <-
-        .print("start assembly skateboard id: ", Id);
-        .concat("sk", Id, SkId);
-        makeArtifact(SkId, "Skateboard", [Id], SkArt);
++!makeSk(Id, SkId, SkArt)
+    <-  makeArtifact(SkId, "Skateboard", [Id], SkArt);
         focus(SkArt);
         .print("skateboard artifact created: ", SkArt);
-
         -+handleSkateboard(Id, SkArt);
+        .
+
+-!makeSk(Id, SkId, SkArt)
+    <-  .print("artifact already created");
+        .
+
++!assembledBaseSk(Id)
+    <-  .concat("sk", Id, SkId);
+        if (not focusing(A,SkId,_,_,_,_)) {
+            !makeSk(Id, SkId, SkArt);
+        }
+        .print("start assembly base skateboard id: ", Id);
 
         // request trunk handler to assembly trunk
         ?play(WAg, trunkWsHandler, skgroup);
@@ -31,21 +39,25 @@ handleSkateboard(0, none).
         assemblyWheels;
         ?play(Ag, skController, skgroup);
         .send(Ag, tell, assembledBaseSk(Id)); //done
+        .print("done base");
         .
 
 
 // assembly optional parts
 
 
-+!assembledOptionals(Id) : handleSkateboard(Id, SkArt)
-    <-
++!assembledOptionals(Id)
+    <-  .concat("sk", Id, SkId);
+        if (not focusing(A,SkId,_,_,_,_)) {
+            !makeSk(Id, SkId, SkArt);
+        }
         .print("start assembly optional parts skateboard id: ", Id);
         ?play(WAg, optionalWsHandler, skgroup);
         .send(WAg, achieve, assembly(optionals));
         .
 
 
-+assembled(optionals)
++assembled(optionals) : handleSkateboard(Id, SkArt)
  <-  .print("optional installed on ", Id);
      assemblyOptionals;
      //?play(WAg, qualityWsHandler, skgroup);
@@ -53,6 +65,7 @@ handleSkateboard(0, none).
 
     ?play(Ag, skController, skgroup);
     .send(Ag, tell, assembledOptionals(Id)); //done
+    .print("done optionals");
      .
 
 +checkedQuality(SkArt)

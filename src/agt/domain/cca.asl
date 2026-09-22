@@ -22,7 +22,7 @@
 
 
 // simulating new orders
-+!simOrder
++!simOrder : simuStep(T)
     <-    if (orderStatus(X, _)) {
             ID = X+1;
           } else {
@@ -31,39 +31,16 @@
           +orderStatus(ID, received);
           .random(R);
           if (R > 0.5) {
-            !sendOrder(ID, optionals);
+            !sendOrder(ID, true);
           }
           else {
-            !sendOrder(ID, basic);
+            !sendOrder(ID, false);
           }
 
-          .wait(R * 3000);
+          .wait((R+0.5) * T);
           !simOrder;
           .
 
-// order events
-
-+startOrder(ID)
-    <-  ?orderStatus(ID, S);
-        +orderStatus(ID, started);
-        -orderStatus(ID, S);
-        .
-
-+completeOrder(ID)
-    <-  ?orderStatus(ID, S);
-        +orderStatus(ID, fulfilled);
-        -orderStatus(ID, S);
-        .
-
-+delayOrder(ID)
-    <-  ?orderStatus(ID, S);
-        +orderStatus(ID, delayed);
-        -orderStatus(ID, S);
-        .
-
-+orderStatus(ID, Status)
-    <-  .print("order n. ", ID, " status: ", Status);
-        .
 
 +!sendOrder(ID, Pref)
     <-  
