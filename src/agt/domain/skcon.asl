@@ -66,11 +66,12 @@
 @design_plan
 +!realized(design, [NId, N2, Op])
     <-  getNorm(NId, Cond, Cons);
-        Cond2 = order([Id, Ag, optionals, D]);
-        N2 = [Cond, Cons];
+        Cond2 = order(Id, Ag, true, D);
+        Cons2 =  Cons; //test: obligation(Ag, Cond2, assemblyWheels(4), D);
+        N2 = [Cond2, Cons2];
         Op = modifyNorm;
         addSkFact(designed(N2, Op));
-        .print("DESIGNED NORM: ", n2, " Cond: ", Cond, " Cons ", Cons, " Op: ", Op);
+        .print("DESIGNED NORM: ", n2, " Cond: ", Cond2, " Cons ", Cons2, " Op: ", Op);
         .
 
 @execute_plan

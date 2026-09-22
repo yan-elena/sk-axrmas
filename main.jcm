@@ -46,7 +46,7 @@ mas main {
 
     // Domain Regulation Management Agent
     agent skcon: domain/skcon.asl {
-        beliefs: bottleneckThreshold(10)
+        beliefs: bottleneckThreshold(5)
         focus: clock, sk_inst.sk_inst_art, sk, ord
     }
 
