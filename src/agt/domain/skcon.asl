@@ -68,7 +68,6 @@
 @design_plan
 +!realized(design, [NId, N2, Op])
     <-  getNorm(NId, Cond, Cons);
-        //?designCond(Cond, Cond2);
         Cond2 = order(Id, Ag, true, D);
         Cons2 =  Cons; //test: obligation(Ag, Cond2, assemblyWheels(4), D);
         N2 = [Cond2, Cons2];
@@ -83,6 +82,8 @@
         addSkFact(executed(NId, [[Cond, Cons], modifyNorm]));
         getNorm(NId, Cond2, Cons2);
         .print("---- NORM ", NId, " EXECUTED ADAPTATION ---- to: ", Cond2, " ", Cons2);
+        // to avoid bottlenecks in the completion of the order during the change of the norms
+        freeAgents;
         .
 
 
@@ -90,14 +91,14 @@
 // Assign order to sca agents
 
 
-+order(Id, Pref, D)
-    <-  addOrder(Id, Pref, D);
++order(Id, Opt, D)
+    <-  addOrder(Id, Opt, D);
         .
 
-+order(Id, Ag, Pref, D)
++order(Id, Ag, Opt, D)
     <-
-        .print("PERCEIVED: ", order(Id, Ag, Pref, D));
-        addFact(order(Id, Ag, Pref, D)).
+        .print("PERCEIVED: ", order(Id, Ag, Opt, D));
+        addFact(order(Id, Ag, Opt, D)).
 
 +orderQueue(N)
     <-  .wait(1000);

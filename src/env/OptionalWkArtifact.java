@@ -13,7 +13,7 @@ public class OptionalWkArtifact extends Artifact {
     void assembly() {
         log("operation install optionals started...");
         try {
-            int r = random.nextInt(1000, 4000);
+            int r = random.nextInt(2000, 5000);
             Thread.sleep(r);
             //execLinkedOp(skArt, "assemblyOptionals");
         } catch (InterruptedException e) {

@@ -5,7 +5,7 @@ states: assembledBaseSk(Id), assembledOptionals(Id) .
 
 constitutive_rules:
 
-1: assembled(wheel, Id) count-as assembledBaseSk(Id)  while assembled(trunk, Id) & order(Id, Ag, Pref, D) .
+1: assembled(wheel, Id) count-as assembledBaseSk(Id)  while assembled(trunk, Id) & order(Id, Ag, Opt, D) .
 
-2: assembled(connBox, Id) count-as assembledOptionals(Id) while order(Id, Ag, Pref, D) & assembled(rails, Id).
+2: assembled(connBox, Id) count-as assembledOptionals(Id) while order(Id, Ag, Opt, D) & assembled(rails, Id).
 

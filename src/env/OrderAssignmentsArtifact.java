@@ -97,4 +97,8 @@ public class OrderAssignmentsArtifact extends Artifact {
         }
     }
 
+    @OPERATION
+    public void freeAgents() {
+        this.agentsAvailability.keySet().forEach(a -> this.agentsAvailability.put(a, AVAILABLE));
+    }
 }
