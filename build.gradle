@@ -50,21 +50,21 @@ sourceSets {
     }
 }
 
-task run (type: JavaExec, dependsOn: 'classes') {
+task runMainOcr (type: JavaExec, dependsOn: 'classes') {
     group       ' JaCaMo'
     description 'runs the JaCaMo application'
     doFirst {
         mkdir 'log'
     }
     mainClass = 'jacamo.infra.JaCaMoLauncher'
-    args 'main.jcm'
+    args 'main-ocr.jcm'
     // jvmArgs '-Xss15m'
     classpath sourceSets.main.runtimeClasspath
 }
 
 task buildJCMDeps (type: JavaExec, dependsOn: 'classes') {
     mainClass = 'jacamo.infra.RunJaCaMoProject'
-    args = ['main.jcm', '--deps']
+    args = ['main-ocr.jcm', '--deps']
     classpath sourceSets.main.runtimeClasspath
 }
 
@@ -120,8 +120,8 @@ task uberJar(type: Jar, dependsOn: 'classes') {
 
     doFirst {
         copy {
-            from 'main.jcm'
-            rename 'main.jcm','default.jcm'
+            from 'main-ocr.jcm'
+            rename 'main-ocr.jcm','default.jcm'
             into project.buildDir.absolutePath + '/jcm'
         }
     }
