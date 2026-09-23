@@ -1,16 +1,16 @@
 scope main {
 
-    // regulative norm for governing the realization of the detect regulation sub-capability
-    norm rnsp1: required(detect, [bottleneck]) & managed(adapt, [detect,design,execute])[source(Ag)]
+    // regulative norm for specifying the obligation to achieve realized the detect regulation sub-capability
+    norm rnsp1: required(detect, [bottleneck]) & managed(adapt, [detect])[source(Ag)]
         -> obligation(Ag, rnsp1, realized(detect, [bottleneck, NId]), false)
         .
 
-    // regulative norm for governing the realization of the design regulation sub-capability
+    // regulative norm for specifying the obligation to achieve realized design regulation sub-capability
     norm rnsp2: required(design, [NId]) & managed(adapt, [design])[source(Ag)]
         -> obligation(Ag, rnsp2, realized(design, [NId, N2, Op]), false)
         .
 
-    // regulative norm for governing the realization of the execute regulation sub-capability
+    // regulative norm for specifying the obligation to achieve realized execute regulation sub-capability
     norm rnsp3: required(execute, [NId, N2, Op])  & managed(adapt, [execute])[source(Ag)]
         -> obligation(Ag, rnsp3, realized(execute, [NId, N2, Op]), false)
         .

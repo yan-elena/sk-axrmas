@@ -23,9 +23,6 @@
             }
         }
 
-        ?play(Con,rmController,rmgroup);
-        .send(Con, tell, managed(adapt, [detect, design, execute]));
-
         +maxIAg(A, 0);
 
         .print("started.");
