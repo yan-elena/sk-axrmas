@@ -36,7 +36,7 @@ mas main {
 
     agent sca: domain/sca.asl {
         join: wsk
-        instances: 3
+        instances: 5
     }
 
     agent cca: domain/cca.asl {
@@ -75,6 +75,10 @@ mas main {
 
 
      organisation skrmas : skorg.xml {
+         group rmgroup: rmgroup {
+            players:  rmcon rmController
+                      skcon skController
+         }
          group skgroup: skgroup {
              responsible-for: s1
              players: cca customer
@@ -83,10 +87,6 @@ mas main {
                       wwa wheelWsHandler
                       owa optionalWsHandler
                       qwa qualityWsHandler
-                      skcon skController
-         }
-         group rmgroup: rmgroup {
-            players:  rmcon rmController
                       skcon skController
          }
          scheme s1: assemblySkSch

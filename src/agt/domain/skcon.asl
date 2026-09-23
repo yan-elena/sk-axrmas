@@ -3,7 +3,7 @@
 
 
 // ------------ Organization Management -----------------------
-+!start : formationStatus(ok)
++!start : formationStatus(ok)[artifact_name(rmgroup)] & formationStatus(ok)[artifact_name(skgroup)]
    <-   makeArtifact(anb,"adaptation.artifact.AdaptiveRegulationBoard",[],AId);
         focus(AId);
         debug(inspector_gui(on));
@@ -22,6 +22,9 @@
                 A=Ag;
             }
         }
+
+        ?play(Con,rmController,rmgroup);
+        .send(Con, tell, managed(adapt, [detect, design, execute]));
 
         +maxIAg(A, 0);
 
@@ -50,7 +53,7 @@
 // Adaptation plans
 
 // when the orders in the queue are greater than 10, triggers the adaptation...
-@detect_plan
+@detect[adapt]
 +!realized(detect, [bottleneck, NId]) : orderQueue(N) & bottleneckThreshold(T) & N > T
     <-  .print("DETECTED TOO MANY ORDERS IN THE QUEUE!!");
         addSkFact(detected(bottleneck));
@@ -65,7 +68,7 @@
 
 //design(Cond, order(Id, Ag, true, D)).
 
-@design_plan
+@design[adapt]
 +!realized(design, [NId, N2, Op])
     <-  getNorm(NId, Cond, Cons);
         Cond2 = order(Id, Ag, true, D);
@@ -76,14 +79,12 @@
         .print("DESIGNED NORM: ", n2, " Cond: ", Cond2, " Cons ", Cons2, " Op: ", Op);
         .
 
-@execute_plan
+@execute[adapt]
 +!realized(execute, [NId, [Cond, Cons], modifyNorm])
     <-  modifyNorm(NId, Cond, Cons);
         addSkFact(executed(NId, [[Cond, Cons], modifyNorm]));
         getNorm(NId, Cond2, Cons2);
         .print("---- NORM ", NId, " EXECUTED ADAPTATION ---- to: ", Cond2, " ", Cons2);
-        // to avoid bottlenecks in the completion of the order during the change of the norms
-        freeAgents;
         .
 
 
@@ -103,6 +104,10 @@
 +orderQueue(N)
     <-  .wait(1000);
         checkQueueAndAssign;
+        // if there is no activated obligations, set all the agents available
+        if (not obligation(Ag, M, W, D)) {
+            freeAgents;
+        }
         .
 
 // order finished
@@ -180,6 +185,9 @@
 +nticks(T) : focusing(_,_,"ora4mas.nopl.NormativeBoard",_,_,_)
     <-  addFact(nticks(T));
         .
+
+
+{ include("regulation/rmcommon.asl") } // basic plans for managing the regulation process
 
 { include("$jacamo/templates/common-cartago.asl") }
 { include("$jacamo/templates/common-moise.asl") }

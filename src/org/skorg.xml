@@ -29,20 +29,20 @@
             <subgroups>
                 <group-specification id="skgroup">
                     <roles>
-                        <role id="customer"/>
-                        <role id="skController"/>
+                        <role id="customer" min="1"/>
+                        <role id="skController" min="1"/>
                         <role id="skHandler" min="1"/>
-                        <role id="trunkWsHandler"/>
-                        <role id="wheelWsHandler"/>
-                        <role id="optionalWsHandler"/>
-                        <role id="qualityWsHandler"/>
+                        <role id="trunkWsHandler" min="1"/>
+                        <role id="wheelWsHandler" min="1"/>
+                        <role id="optionalWsHandler" min="1"/>
+                        <role id="qualityWsHandler" min="1"/>
                     </roles>
                 </group-specification>
 
                 <group-specification id="rmgroup">
                     <roles>
-                        <role id="skController"/>
-                        <role id="rmController"/>
+                        <role id="skController" min="1"/>
+                        <role id="rmController" min="1"/>
                     </roles>
                 </group-specification>
             </subgroups>

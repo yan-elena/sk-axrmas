@@ -1,17 +1,17 @@
 scope main {
 
-    // regulative norm for governing the realization of the detect reuglation sub-capability
-    norm rnsp1: required(detect, [bottleneck]) & play(Ag, skController, rmgroup)
+    // regulative norm for governing the realization of the detect regulation sub-capability
+    norm rnsp1: required(detect, [bottleneck]) & managed(adapt, [detect,design,execute])[source(Ag)]
         -> obligation(Ag, rnsp1, realized(detect, [bottleneck, NId]), false)
         .
 
-    // regulative norm for governing the realization of the design reuglation sub-capability
-    norm rnsp2: required(design, [NId]) & play(Ag, skController, rmgroup)
+    // regulative norm for governing the realization of the design regulation sub-capability
+    norm rnsp2: required(design, [NId]) & managed(adapt, [design])[source(Ag)]
         -> obligation(Ag, rnsp2, realized(design, [NId, N2, Op]), false)
         .
 
-    // regulative norm for governing the realization of the execute reuglation sub-capability
-    norm rnsp3: required(execute, [NId, N2, Op])  & play(Ag, skController, rmgroup)
+    // regulative norm for governing the realization of the execute regulation sub-capability
+    norm rnsp3: required(execute, [NId, N2, Op])  & managed(adapt, [execute])[source(Ag)]
         -> obligation(Ag, rnsp3, realized(execute, [NId, N2, Op]), false)
         .
 
