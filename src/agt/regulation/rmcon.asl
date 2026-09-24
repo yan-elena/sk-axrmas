@@ -1,5 +1,5 @@
 
-+sk(O)
++rm(O)
     <- .print("PERCEIVED FACT FROM SK: ", O) .
 
 

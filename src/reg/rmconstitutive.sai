@@ -7,16 +7,32 @@ constitutive_rules:
 
 1: orderQueue(N) count-as required(detect, [bottleneck]) while N > 3 & managed(adapt, [detect]).
 
-2: sk(detected(bottleneck)) count-as realized(detect, [bottleneck, nSai2]) .
+2: rm(detected(bottleneck)) count-as realized(detect, [bottleneck, nSai2]) .
 
 
 3: realized(detect, [bottleneck, NId]) count-as required(design, [NId]) while managed(adapt, [design]).
 
 4: realized(detect, [bottleneck, NId]) count-as required(execute, [NId, N2, Op]) while not managed(adapt, [design]) & managed(adapt, [execute]) & realized(design, [NId, N2, Op]) .
 
-5: sk(designed(N2, Op)) count-as realized(design, [NId, N2, Op]) while required(design, [NId]) .
+5: rm(designed(N2, Op)) count-as realized(design, [NId, N2, Op]) while required(design, [NId]) .
 
 
 6: realized(design, [NId, N2, Op]) count-as required(execute, [NId, N2, Op]) while managed(adapt, [execute]).
 
-7: sk(executed(NId, [N2, Op])) count-as realized(execute, [NId, N2, Op]) .
+7: rm(executed(NId, [N2, Op])) count-as realized(execute, [NId, N2, Op]) .
+
+
+// Governing the regulation process
+
+8: count-as proc(adapt, [detect, design, execute])
+        while not realized(proc(adapt, NewProc)) .
+
+// constitutive norm for constituting the requirement for the regulation process
+
+9: performance(adapt) count-as required(proc(adapt, [detect, execute]))
+        while proc(adapt, [detect,evaluate,execute]) .
+
+// constitutive norm for constituting the realization of the regulation process proc(adapt, [detect, execute])
+
+10: not managed(adapt, [design]) count-as realized proc(adapt, [detect, execute])
+        while managed(adapt, [detect]) & managed(adapt, [execute]) .

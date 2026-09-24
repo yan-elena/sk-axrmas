@@ -62,6 +62,18 @@ task runMainOcr (type: JavaExec, dependsOn: 'classes') {
     classpath sourceSets.main.runtimeClasspath
 }
 
+task runMainAcr (type: JavaExec, dependsOn: 'classes') {
+    group       ' JaCaMo'
+    description 'runs the JaCaMo application'
+    doFirst {
+        mkdir 'log'
+    }
+    mainClass = 'jacamo.infra.JaCaMoLauncher'
+    args 'main-acr.jcm'
+    // jvmArgs '-Xss15m'
+    classpath sourceSets.main.runtimeClasspath
+}
+
 task buildJCMDeps (type: JavaExec, dependsOn: 'classes') {
     mainClass = 'jacamo.infra.RunJaCaMoProject'
     args = ['main-ocr.jcm', '--deps']

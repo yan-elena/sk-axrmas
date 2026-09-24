@@ -27,7 +27,7 @@ public class RmArtifact extends Artifact {
     }
 
     @OPERATION
-    public void addSkFact(String fact) {
+    public void addRmFact(String fact) {
         try {
             Literal l = parseLiteral(fact);
 //            l.addSource(RM_ATOM);
@@ -44,7 +44,7 @@ public class RmArtifact extends Artifact {
     }
 
     @OPERATION
-    public void removeSkFact(String fact) {
+    public void removeRmFact(String fact) {
         try {
             Literal l = parseLiteral(fact);
             if (l.hasTerm()) {

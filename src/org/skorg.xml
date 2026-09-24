@@ -41,7 +41,8 @@
 
                 <group-specification id="rmgroup">
                     <roles>
-                        <role id="skController" min="1"/>
+                        <role id="skHandler" />
+                        <role id="skController" />
                         <role id="rmController" min="1"/>
                     </roles>
                 </group-specification>

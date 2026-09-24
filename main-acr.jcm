@@ -34,7 +34,8 @@ mas main {
         beliefs: artName(qw)
     }
 
-    agent sca: domain/sca.asl {
+    agent sca: domain/sca-acr.asl {
+        ag-class: log.AdaptiveNormativeLogAg("src/reg/skregulative.npl", "src/reg/skconstitutive.sai")
         join: wsk
         instances: 5
     }
@@ -47,14 +48,13 @@ mas main {
     // Domain Regulation Management Agent
     agent skcon: domain/skcon.asl {
         beliefs: bottleneckThreshold(5)
-        focus: clock, sk_inst.sk_inst_art, rm, ord
+        focus: clock, sk_inst.sk_inst_art, sk, ord
     }
 
     // Process and Architecture Regulation Management Agent
     agent rmcon: regulation/rmcon.asl {
         ag-class: log.AdaptiveNormativeLogAg("src/reg/rmregulative.npl", "src/reg/rmconstitutive.sai")
-        beliefs: arc(fcr, [ocr])
-        focus: clock, rm, ord
+        focus: clock, sk, ord
     }
 
      workspace wsk {
@@ -65,7 +65,7 @@ mas main {
          artifact clock : cartago.tools.Clock()
          artifact sk : SkArtifact()
          artifact ord : OrderAssignmentsArtifact()
-         artifact rm : RmArtifact()
+         //artifact rm : RmArtifact()
      }
 
 
