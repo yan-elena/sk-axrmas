@@ -1,0 +1,97 @@
+/*
+    JaCaMo Application File Template
+    --------------------------------
+
+    This file defines the initial state of the MAS (initial agents, environment, organisation, ....)
+
+    (see jacamo/doc/jcm.html for more information about what can be defined in this file)
+
+    JaCaMo 1.2
+*/
+
+mas main {
+
+
+
+    // Domain Application Agents
+    agent twa: domain/wca.asl {
+        focus: wsk.tw
+        beliefs: artName(tw)
+    }
+
+    agent wwa: domain/wca.asl {
+        focus: wsk.ww
+        beliefs: artName(ww)
+    }
+
+    agent owa: domain/wca.asl {
+        focus: wsk.ow
+        beliefs: artName(ow)
+    }
+
+    agent qwa: domain/qa.asl {
+        focus: wsk.qw
+        beliefs: artName(qw)
+    }
+
+    agent sca: domain/sca-acr.asl {
+        ag-class: log.AdaptiveNormativeLogAg("src/reg/skregulative-acr.npl", "src/reg/skconstitutive.sai")
+        ag-arch:     log.LoggerArch
+        join: wsk
+        focus: clock, sk, ord
+        instances: 5
+    }
+
+    agent cca: domain/cca.asl {
+        focus: wsk.clock
+        beliefs: simuStep(3000)
+    }
+
+    // Domain Regulation Management Agent
+    agent skcon: domain/skcon.asl {
+        beliefs: bottleneckThreshold(5)
+        focus: clock, sk_inst.sk_inst_art, sk, ord
+    }
+
+    // Process and Architecture Regulation Management Agent
+    agent rmcon: regulation/rmcon.asl {
+        ag-class: log.AdaptiveNormativeLogAg("src/reg/rmregulative.npl", "src/reg/rmconstitutive.sai")
+        focus: clock, sk, ord
+    }
+
+     workspace wsk {
+         artifact tw : TrunkWkArtifact()
+         artifact ww : WheelWkArtifact()
+         artifact ow : OptionalWkArtifact()
+         artifact qw : QualityWkArtifact()
+         artifact clock : cartago.tools.Clock()
+         artifact sk : SkArtifact()
+         artifact ord : OrderAssignmentsArtifact()
+         //artifact rm : RmArtifact()
+     }
+
+
+     institution sk_inst:src/reg/skconstitutive.sai{
+        workspaces: wsk
+     }
+
+
+     organisation skrmas : skorg.xml {
+         group skgroup: skgroup {
+             responsible-for: s1
+             players: cca customer
+                      sca skHandler
+                      twa trunkWsHandler
+                      wwa wheelWsHandler
+                      owa optionalWsHandler
+                      qwa qualityWsHandler
+                      skcon skController
+         }
+          group rmgroup: rmgroup {
+             players:  rmcon rmController
+                       skcon skController
+          }
+         scheme s1: assemblySkSch
+     }
+
+}

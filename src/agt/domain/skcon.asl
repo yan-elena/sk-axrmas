@@ -18,7 +18,8 @@
 
             if(Role == skHandler) {
                 +scaStatus(Ag, 0);
-                addAgent(Ag);
+                //addAgent(Ag);
+                .print("skHandler agent: ", Ag);
                 A=Ag;
             }
         }
@@ -51,17 +52,20 @@
 
 // when the orders in the queue are greater than 10, triggers the adaptation...
 @detect_plan
-+!realized(detect, [bottleneck, NId]) : orderQueue(N) & bottleneckThreshold(T) & N > T
-    <-  .print("DETECTED TOO MANY ORDERS IN THE QUEUE!!");
++!realized(detect, [bottleneck, NId])
+    <-  ?bottleneckThreshold(T);
+        .concat("+orderQueue(", T, ")", Event);
+        .wait(Event);
+        .print("DETECTED TOO MANY ORDERS IN THE QUEUE!!");
         addSkFact(detected(bottleneck));
         .print("BOTTLENECK!!!");
         .
 
-+!realized(detect, [bottleneck, NId])
-    <-  .print("Detect: no need for regulation adaptation");
-        .wait(2000);
-        !realized(detect, [bottleneck, NId]);
-        .
+//+!realized(detect, [bottleneck, NId])
+//    <-  .print("Detect: no need for regulation adaptation");
+//        .wait(2000);
+//        !realized(detect, [bottleneck, NId]);
+//        .
 
 @design_plan
 +!realized(design, [NId, N2, Op])

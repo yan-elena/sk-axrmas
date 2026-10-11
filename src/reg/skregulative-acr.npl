@@ -1,0 +1,11 @@
+scope main {
+
+    norm n1: order(Id, Ag, Pref, D) & not assembledBaseSk(Id)
+        -> obligation(Ag, true, assembledBaseSk(Id), D)
+        .
+
+    norm n2: order(Id, Ag, true, D) & not assembledOptionals(Id)
+        -> obligation(Ag, true, assembledOptionals(Id), D)
+        .
+
+}

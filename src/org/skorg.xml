@@ -31,7 +31,7 @@
                     <roles>
                         <role id="customer"/>
                         <role id="skController"/>
-                        <role id="skHandler" min="1"/>
+                        <role id="skHandler" min="5"/>
                         <role id="trunkWsHandler"/>
                         <role id="wheelWsHandler"/>
                         <role id="optionalWsHandler"/>

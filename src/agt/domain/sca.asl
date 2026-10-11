@@ -70,7 +70,6 @@ handleSkateboard(0, none).
 
 +checkedQuality(SkArt)
     <-  .print("completed quality check skateboard id: ", SkArt);
-        //todo
         .
 
 { include("$jacamo/templates/common-cartago.asl") }
