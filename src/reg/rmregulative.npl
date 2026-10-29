@@ -15,4 +15,13 @@ scope main {
         -> obligation(Ag, rnsp3, realized(execute, [NId, N2, Op]), false)
         .
 
+
+    // Adapting the regulation process
+
+//    norm rnsp4: required(proc(adapt, [detect, execute]), Ag)
+//        -> obligation(Ag true, realize(proc(adapt, [detect, execute])), false) .
+//
+//
+//    norm rna1: true
+//        -> obligation(Ag, true, is(Ag, regulator(domain)), false) .
 }

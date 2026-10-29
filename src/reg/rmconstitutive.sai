@@ -1,7 +1,7 @@
 institution_id : sk_inst .
 
 status_functions:
-states: required(Cap, Args), realized(Cap, Args) .
+states: required(Cap, Args), realized(Cap, Args) , proc(Cap, Proc).
 
 constitutive_rules:
 
@@ -29,8 +29,8 @@ constitutive_rules:
 
 // constitutive norm for constituting the requirement for the regulation process
 
-9: performance(adapt) count-as required(proc(adapt, [detect, execute]))
-        while proc(adapt, [detect,evaluate,execute]) .
+9: performance(adapt) count-as required(proc(adapt, [detect, execute]), rmcon)
+        while proc(adapt, [detect,design,execute]) .
 
 // constitutive norm for constituting the realization of the regulation process proc(adapt, [detect, execute])
 
